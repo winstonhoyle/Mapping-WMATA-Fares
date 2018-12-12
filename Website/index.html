@@ -15,9 +15,8 @@
   <style>
     #mapid {
       position: relative;
-      height:600px;
-      width:1200px;
-      left: 100px;
+      height: 800px;
+      width:800px;
     }
   </style>
 <body>
@@ -74,76 +73,6 @@
       lines.addTo(map);
       
       map.fitBounds(lines.getBounds());
-      
-      red = false;
-      function Red() {
-        if (!red) {
-          map.removeLayer(lines);
-          redline = L.geoJson(linejson, {
-            style: function(feature) {
-              return { color: feature.properties.NAME};
-            },
-            filter: function(feature) {
-              if (feature.properties.NAME === "red") return true;
-            }
-          });
-          redline.addTo(map);
-          map.fitBounds(redline.getBounds());
-          red = true;
-        } else {
-          map.removeLayer(redline);
-          map.addLayer(lines);
-          map.fitBounds(lines.getBounds());
-          red = false;
-        }
-      }
-      
-      
-      /*
-      function removeAllLayers() {
-        map.eachLayer(function() {
-          if (map.hasLayer(redline)) {
-            map.removeLayer(redline);
-          } else if (map.hasLayer(orangeline)) {
-            map.removeLayer(orangeline);
-          } else if (map.hasLayer(silverline)) {
-            map.removeLayer(silverlive);
-          } else if (map.hasLayer(yellowline)) {
-            map.removeLayer(yellowline);
-          } else if (map.hasLayer(blueline)) {
-            map.removeLayer(blueline);
-          } else if (map.hasLayer(greenline)) {
-            map.removeLayer(greenline);
-          } else {
-            console.log("no layers");
-          }
-        });
-      }
-    
-    */
-     
-      orange = false;
-      function Orange() {
-        if (!orange) {
-          map.removeLayer(lines);
-          orangeline = L.geoJson(linejson, {
-            style: function(feature) {
-              return { color: feature.properties.NAME };
-            },
-            filter: function(feature) {
-              if (feature.properties.NAME === "orange") return true;
-            }
-          });
-          orangeline.addTo(map);
-          map.fitBounds(orangeline.getBounds());
-          orange = true;
-        } else {
-          map.removeLayer(orangeline);
-          map.addLayer(lines);
-          map.fitBounds(lines.getBounds());
-          orange = false;
-        }
-      }
       
     </script>
   </div>

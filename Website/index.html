@@ -30,6 +30,7 @@
       
       var stationjson = {};
       var linejson = {};
+      var farejson = {};
       
       $.ajax({
         url:station_url,
@@ -37,7 +38,6 @@
         dataType:'json',
         success: function(data){
           stationjson = data;
-          console.log("stations loaded");
         }
       });
       
@@ -47,7 +47,16 @@
         dataType:'json',
         success: function(data){
           linejson = data;
-          console.log("lines loaded");
+        }
+      });
+    
+      
+      $.ajax({
+        url:"https://raw.githubusercontent.com/winstonhoyle/Mapping-WMATA-Fares/master/Data/all_stations.json",
+        async: false,
+        dataType: 'json',
+        success: function(data) {
+          farejson = data;
         }
       });
       
@@ -55,9 +64,10 @@
         pointToLayer: function(feature, latlng) {
           return L.circleMarker(latlng, {
             radius: 5,
-            color: "black",
-            fillColor: "#00000"
-          }).bindTooltip(feature.properties.STAT_NAME);
+            color: "#000000",
+            fillColor: "#ffffff",
+            fillOpacity: 1.0
+          }).bindTooltip(feature.properties.MetroLine);
         }
       });
       
@@ -69,11 +79,36 @@
           };
         }
       });
+      
       stations.addTo(map);
       lines.addTo(map);
       
+      stations.bringToFront();
+      lines.bringToBack();
+      
       map.fitBounds(lines.getBounds());
       
+      function OnlyStations(color){
+        stationList = []
+        var stationsNum = 0;
+        var count = stationjson.features.length;
+        for (var i=0; i < count; i++){
+          stationColor = stationjson.features[i].properties.MetroLine.split(",").map(function(item) {
+            return item.trim();
+          });
+          if (stationColor.includes(String(color))){
+            stationsNum++;
+            stationList.push(stationjson.features[i].properties.STAT_NAME);
+          }
+        }
+        console.log(String(color) + ": " + String(stationsNum));
+        return stationList;
+      }
+      
+      var redStations=OnlyStations("red");
+      
+    </script>
+    <script src="./picklines.js">
     </script>
   </div>
   <button onclick="Red();">Red</button>

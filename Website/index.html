@@ -22,18 +22,22 @@
 <body>
   <div id="mapid">
     <script>
+      //add basemap
       var map = L.map('mapid');
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href=http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }).addTo(map);
+      //geojson files
       var station_url = "https://raw.githubusercontent.com/winstonhoyle/Mapping-WMATA-Fares/master/Data/geojson/Metro_Stations.geojson";
       var line_url = "https://raw.githubusercontent.com/winstonhoyle/Mapping-WMATA-Fares/master/Data/geojson/Metro_Lines.geojson";
+      var fare_url = "https://raw.githubusercontent.com/winstonhoyle/Mapping-WMATA-Fares/master/Data/all_stations.json";
       
-      
+      //formatting into json objects
       var stationjson = {};
       var linejson = {};
       var farejson = {};
       
+      //getting station information
       $.ajax({
         url:station_url,
         async:false,
@@ -43,6 +47,7 @@
         }
       });
       
+      //getting line infomation
       $.ajax({
         url:line_url,
         async:false,
@@ -52,9 +57,9 @@
         }
       });
     
-      
+      //getting fare information
       $.ajax({
-        url:"https://raw.githubusercontent.com/winstonhoyle/Mapping-WMATA-Fares/master/Data/all_stations.json",
+        url: fare_url,
         async: false,
         dataType: 'json',
         success: function(data) {
@@ -62,6 +67,7 @@
         }
       });
       
+      //creating stations layer
       var stations = L.geoJson(stationjson, {
         pointToLayer: function(feature, latlng) {
           return L.circleMarker(latlng, {
@@ -73,6 +79,7 @@
         }
       });
       
+      //creating lines layer
       var lines = L.geoJson(linejson, {
         style: function(features) {
           return {
@@ -82,30 +89,15 @@
         }
       });
       
+      //adding stations and lines to map
       stations.addTo(map);
       lines.addTo(map);
       
       stations.bringToFront();
       lines.bringToBack();
       
-      map.fitBounds(lines.getBounds());
+      map.fitBounds(stations.getBounds());
       
-      function OnlyStations(color){
-        stationList = []
-        var stationsNum = 0;
-        var count = stationjson.features.length;
-        for (var i=0; i < count; i++){
-          stationColor = stationjson.features[i].properties.MetroLine.split(",").map(function(item) {
-            return item.trim();
-          });
-          if (stationColor.includes(String(color))){
-            stationsNum++;
-            stationList.push(stationjson.features[i].properties.STAT_NAME);
-          }
-        }
-        console.log(String(color) + ": " + String(stationsNum));
-        return stationList;
-      }
       
     </script>
     <script src="./picklines.js">

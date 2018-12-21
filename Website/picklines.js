@@ -1,9 +1,40 @@
+      /* This javascript page is for the line selection
+       * functions for line manipulation
+       */
+      
+      /**
+       * This function selects all the stations for the parameter of color
+       */
+      function OnlyStations(color){
+      //empty list
+        stationList = []
+      //for loop thay goes through all stations and retrieves the ones with the parameter of color
+        for (var i=0; i < stationjson.features.length; i++){
+          stationColor = stationjson.features[i].properties.MetroLine.split(",").map(function(item) {
+            //remove spaces if a station has more than one color at the station
+            return item.trim();
+          });
+          //pushes the station into the list if the station's line color matches the parameter
+          if (stationColor.includes(String(color))){
+            stationList.push(stationjson.features[i].properties.STAT_NAME);
+          }
+        }
+        return stationList;
+      }
+      
+      /**
+       * Each of these functions that have a line color are the same
+       * comments are only made to this first on
+       */
+      //defining false because color does not exist yet
       red = false;
       function Red() {
         if (!red) {
+          //removing other lines and stations
           map.removeLayer(lines);
           map.removeLayer(stations);
           
+          //creating a layer, the line color's stations
           redStations = L.geoJson(stationjson, {
             pointToLayer: function(feature, latlng) {
                   return L.circleMarker(latlng, {
@@ -14,10 +45,13 @@
                   }).bindTooltip(feature.properties.STAT_NAME);
             },
             filter: function(features) {
+                  //calling the OnlyStation function to retrieve all stations that fall on the color's line
                   redStations = OnlyStations("red");
+                  //return true if stations match
                   if (redStations.includes(features.properties.STAT_NAME)) return true;
             }
           });
+          //creating a layer for the color's line
           redline = L.geoJson(linejson, {
             style: function(feature) {
               return {
@@ -29,23 +63,28 @@
               if (feature.properties.NAME === "red") return true;
             }
           });
+          //add both to map and zoom into the line
           redline.addTo(map);
           redStations.addTo(map);
           map.fitBounds(redline.getBounds());
+          //color is now true because it exists
           red = true;
         } else {
+          //this else statement is here incase color already exists
+          //the user now wants to remove the color's stations and line
           map.removeLayer(redline);
           map.removeLayer(redStations);
+          //adds back all stations and lines
           map.addLayer(lines);
           map.addLayer(stations);
           map.fitBounds(lines.getBounds());
+          //false because color's line and stations aren't on the map anymore
           red = false;
         }
       }
       
       /**
-       *TO DO: COMMENT
-       *ADD STATIONS TO EACH BUTTON
+       *TO DO: 
        *FORMAT FARES
        *FARE SELECTION
        *FARE COLOR
@@ -197,20 +236,42 @@
       function Blue() {
         if (!blue) {
           map.removeLayer(lines);
+          map.removeLayer(stations);
+          
+          blueStations = L.geoJson(stationjson, {
+            pointToLayer: function(feature, latlng) {
+                  return L.circleMarker(latlng, {
+                  radius: 5,
+                  color: "#000000",
+                  fillColor: "#ffffff",
+                  fillOpacity: 1.0
+                  }).bindTooltip(feature.properties.STAT_NAME);
+            },
+            filter: function(features) {
+                  blueStations = OnlyStations("blue");
+                  if (blueStations.includes(features.properties.STAT_NAME)) return true;
+            }
+          });
           blueline = L.geoJson(linejson, {
             style: function(feature) {
-              return { color: feature.properties.NAME};
+              return {
+                  weight: 6,
+                  color: feature.properties.NAME
+                  };
             },
             filter: function(feature) {
               if (feature.properties.NAME === "blue") return true;
             }
           });
           blueline.addTo(map);
+          blueStations.addTo(map);
           map.fitBounds(blueline.getBounds());
           blue = true;
         } else {
           map.removeLayer(blueline);
+          map.removeLayer(blueStations);
           map.addLayer(lines);
+          map.addLayer(stations);
           map.fitBounds(lines.getBounds());
           blue = false;
         }
@@ -220,20 +281,42 @@
       function Green() {
         if (!green) {
           map.removeLayer(lines);
+          map.removeLayer(stations);
+          
+          greenStations = L.geoJson(stationjson, {
+            pointToLayer: function(feature, latlng) {
+                  return L.circleMarker(latlng, {
+                  radius: 5,
+                  color: "#000000",
+                  fillColor: "#ffffff",
+                  fillOpacity: 1.0
+                  }).bindTooltip(feature.properties.STAT_NAME);
+            },
+            filter: function(features) {
+                  greenStations = OnlyStations("green");
+                  if (greenStations.includes(features.properties.STAT_NAME)) return true;
+            }
+          });
           greenline = L.geoJson(linejson, {
             style: function(feature) {
-              return { color: feature.properties.NAME};
+              return {
+                  weight: 6,
+                  color: feature.properties.NAME
+                  };
             },
             filter: function(feature) {
               if (feature.properties.NAME === "green") return true;
             }
           });
           greenline.addTo(map);
+          greenStations.addTo(map);
           map.fitBounds(greenline.getBounds());
           green = true;
         } else {
           map.removeLayer(greenline);
+          map.removeLayer(greenStations);
           map.addLayer(lines);
+          map.addLayer(stations);
           map.fitBounds(lines.getBounds());
           green = false;
         }

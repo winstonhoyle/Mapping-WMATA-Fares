@@ -13,7 +13,7 @@ next(filereader, None)
 
 ##Loop through every row appending station and fare info
 for row in filereader:
-    fares = {row[1] : {"fares" : {"peak":row[2],"offpeak":row[3],"reduced_peak":row[4],"reduced_offpeak":row[5] }}}
+    fares = {row[1] : {"fares" : [{"peak":row[2],"offpeak":row[3],"reduced_peak":row[4],"reduced_offpeak":row[5] }]}}
     jsonformat[row[0]].append(fares)
 
 csvfile.close()

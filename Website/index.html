@@ -93,21 +93,20 @@
       stations.addTo(map);
       lines.addTo(map);
       
-      stations.bringToFront();
-      lines.bringToBack();
-      
       map.fitBounds(stations.getBounds());
       
+      var deptstation = farejson["Fort Totten Metro Station"]
+      console.log(farejson);
       
     </script>
     <script src="./picklines.js">
     </script>
   </div>
-  <button onclick="Red();">Red</button>
-  <button onclick="Orange();">Orange</button>
-  <button onclick="Silver();">Silver</button>
-  <button onclick="Yellow();">Yellow</button>
-  <button onclick="Blue();">Blue</button>
-  <button onclick="Green();">Green</button>
+  <input type="button" onclick="Red()" value="Red" id="redButton">
+  <input type="button" onclick="Orange()" value="Orange" id="orangeButton"/>
+  <input type="button" onclick="Silver()" value="Silver" id="silverButton"/>
+  <input type="button" onclick="Yellow()" value="Yellow" id="yellowButton"/>
+  <input type="button" onclick="Blue()" value="Blue" id="blueButton"/>
+  <input type="button" onclick="Green()" value="Green" id="greenButton"/>
 </body>
 </html>

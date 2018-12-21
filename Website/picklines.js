@@ -69,6 +69,8 @@
           map.fitBounds(redline.getBounds());
           //color is now true because it exists
           red = true;
+          //show user that that color has been selected
+          document.getElementById("redButton").value = "Deselect Red";
         } else {
           //this else statement is here incase color already exists
           //the user now wants to remove the color's stations and line
@@ -80,6 +82,8 @@
           map.fitBounds(lines.getBounds());
           //false because color's line and stations aren't on the map anymore
           red = false;
+          //change button back to red
+          document.getElementById("redButton").value = "Red";
         }
       }
       
@@ -126,6 +130,7 @@
           orangeStations.addTo(map);
           map.fitBounds(orangeline.getBounds());
           orange = true;
+          document.getElementById("orangeButton").value = "Deselect Orange";
         } else {
           map.removeLayer(orangeline);
           map.removeLayer(orangeStations);
@@ -133,9 +138,8 @@
           map.addLayer(stations);
           map.fitBounds(lines.getBounds());
           orange = false;
+          document.getElementById("orangeButton").value = "Orange";
         }
-        
-        
       }
       
       silver = false;
@@ -173,6 +177,7 @@
           silverStations.addTo(map);
           map.fitBounds(silverline.getBounds());
           silver = true;
+          document.getElementById("silverButton").value = "Deselect Silver";
         } else {
           map.removeLayer(silverline);
           map.removeLayer(silverStations);
@@ -180,6 +185,7 @@
           map.addLayer(stations);
           map.fitBounds(lines.getBounds());
           silver = false;
+          document.getElementById("silverButton").value = "Silver";
         }
       }
       
@@ -222,6 +228,7 @@
           yellowStations.addTo(map);
           map.fitBounds(yellowline.getBounds());
           yellow = true;
+          document.getElementById("yellowButton").value = "Deselect Yellow";
         } else {
           map.removeLayer(yellowline);
           map.removeLayer(yellowStations);
@@ -229,6 +236,7 @@
           map.addLayer(stations);
           map.fitBounds(lines.getBounds());
           yellow = false;
+          document.getElementById("yellowButton").value = "Yellow";
         }
       }
       
@@ -267,6 +275,7 @@
           blueStations.addTo(map);
           map.fitBounds(blueline.getBounds());
           blue = true;
+          document.getElementById("blueButton").value = "Deselect Blue";
         } else {
           map.removeLayer(blueline);
           map.removeLayer(blueStations);
@@ -274,6 +283,7 @@
           map.addLayer(stations);
           map.fitBounds(lines.getBounds());
           blue = false;
+          document.getElementById("blueButton").value = "Blue";
         }
       }
       
@@ -312,6 +322,7 @@
           greenStations.addTo(map);
           map.fitBounds(greenline.getBounds());
           green = true;
+          document.getElementById("greenButton").value = "Deselect Green";
         } else {
           map.removeLayer(greenline);
           map.removeLayer(greenStations);
@@ -319,6 +330,7 @@
           map.addLayer(stations);
           map.fitBounds(lines.getBounds());
           green = false;
+          document.getElementById("greenButton").value = "Green";
         }
       }
       

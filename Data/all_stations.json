@@ -1,5 +1,5 @@
 {
- "College Park-u Of Md Metro Station": [
+ "College Park-u Of Md Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -910,8 +910,8 @@
     }
    }
   }
- ],
- "Capitol Heights Metro Station": [
+ ,
+ "Capitol Heights Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -1822,8 +1822,8 @@
     }
    }
   }
- ],
- "Morgan Boulevard Metro Station": [
+ ,
+ "Morgan Boulevard Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -2734,8 +2734,8 @@
     }
    }
   }
- ],
- "Georgia Ave-petworth Metro Station": [
+ ,
+ "Georgia Ave-petworth Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -3646,8 +3646,8 @@
     }
    }
   }
- ],
- "Takoma Metro Station": [
+ ,
+ "Takoma Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -4558,8 +4558,8 @@
     }
    }
   }
- ],
- "Glenmont Metro Station": [
+ ,
+ "Glenmont Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -5470,8 +5470,8 @@
     }
    }
   }
- ],
- "Wheaton Metro Station": [
+ ,
+ "Wheaton Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -6382,8 +6382,8 @@
     }
    }
   }
- ],
- "Forest Glen Metro Station": [
+ ,
+ "Forest Glen Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -7294,8 +7294,8 @@
     }
    }
   }
- ],
- "Silver Spring Metro Station": [
+ ,
+ "Silver Spring Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -8206,8 +8206,8 @@
     }
    }
   }
- ],
- "Brookland-cua Metro Station": [
+ ,
+ "Brookland-cua Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -9118,8 +9118,8 @@
     }
    }
   }
- ],
- "Fort Totten Metro Station": [
+ ,
+ "Fort Totten Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -10030,8 +10030,8 @@
     }
    }
   }
- ],
- "Prince George's Plaza Metro Station": [
+ ,
+ "Prince George's Plaza Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -10942,8 +10942,8 @@
     }
    }
   }
- ],
- "West Hyattsville Metro Station": [
+ ,
+ "West Hyattsville Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -11854,8 +11854,8 @@
     }
    }
   }
- ],
- "Benning Road Metro Station": [
+ ,
+ "Benning Road Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -12766,8 +12766,8 @@
     }
    }
   }
- ],
- "Addison Road-seat Pleasant Metro Station": [
+ ,
+ "Addison Road-seat Pleasant Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -13678,8 +13678,8 @@
     }
    }
   }
- ],
- "Deanwood Metro Station": [
+ ,
+ "Deanwood Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -14590,8 +14590,8 @@
     }
    }
   }
- ],
- "New Carrollton Metro Station": [
+ ,
+ "New Carrollton Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -15502,8 +15502,8 @@
     }
    }
   }
- ],
- "Landover Metro Station": [
+ ,
+ "Landover Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -16414,8 +16414,8 @@
     }
    }
   }
- ],
- "Cheverly Metro Station": [
+ ,
+ "Cheverly Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -17326,8 +17326,8 @@
     }
    }
   }
- ],
- "Largo Town Center Metro Station": [
+ ,
+ "Largo Town Center Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -18238,8 +18238,8 @@
     }
    }
   }
- ],
- "Noma Metro": [
+ ,
+ "Noma Metro": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -19150,8 +19150,8 @@
     }
    }
   }
- ],
- "Rosslyn Metro Station": [
+ ,
+ "Rosslyn Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -20062,8 +20062,8 @@
     }
    }
   }
- ],
- "Arlington Cemetery Metro Station": [
+ ,
+ "Arlington Cemetery Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -20974,8 +20974,8 @@
     }
    }
   }
- ],
- "Dupont Circle Metro Station": [
+ ,
+ "Dupont Circle Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -21886,8 +21886,8 @@
     }
    }
   }
- ],
- "Pentagon Metro Station": [
+ ,
+ "Pentagon Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -22798,8 +22798,8 @@
     }
    }
   }
- ],
- "Crystal City Metro Station": [
+ ,
+ "Crystal City Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -23710,8 +23710,8 @@
     }
    }
   }
- ],
- "Navy Yard Metro Station": [
+ ,
+ "Navy Yard Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -24622,8 +24622,8 @@
     }
    }
   }
- ],
- "Mcpherson Square Metro Station": [
+ ,
+ "Mcpherson Square Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -25534,8 +25534,8 @@
     }
    }
   }
- ],
- "Shaw-howard U Metro": [
+ ,
+ "Shaw-howard U Metro": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -26446,8 +26446,8 @@
     }
    }
   }
- ],
- "Southern Ave Metro Station": [
+ ,
+ "Southern Ave Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -27358,8 +27358,8 @@
     }
    }
   }
- ],
- "Greenbelt Metro Station": [
+ ,
+ "Greenbelt Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -28270,8 +28270,8 @@
     }
    }
   }
- ],
- "Tenleytown-au Metro Station": [
+ ,
+ "Tenleytown-au Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -29182,8 +29182,8 @@
     }
    }
   }
- ],
- "West Falls Church Metro Station": [
+ ,
+ "West Falls Church Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -30094,8 +30094,8 @@
     }
    }
   }
- ],
- "Dunn Loring-merrifield Metro Station": [
+ ,
+ "Dunn Loring-merrifield Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -31006,8 +31006,8 @@
     }
    }
   }
- ],
- "Vienna Metro Station": [
+ ,
+ "Vienna Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -31918,8 +31918,8 @@
     }
    }
   }
- ],
- "Friendship Heights Metro Station": [
+ ,
+ "Friendship Heights Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -32830,8 +32830,8 @@
     }
    }
   }
- ],
- "Shady Grove Metro Station": [
+ ,
+ "Shady Grove Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -33742,8 +33742,8 @@
     }
    }
   }
- ],
- "Rockville Metro Station": [
+ ,
+ "Rockville Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -34654,8 +34654,8 @@
     }
    }
   }
- ],
- "Twinbrook Metro Station": [
+ ,
+ "Twinbrook Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -35566,8 +35566,8 @@
     }
    }
   }
- ],
- "White Flint Metro Station": [
+ ,
+ "White Flint Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -36478,8 +36478,8 @@
     }
    }
   }
- ],
- "Grosvenor-strathmore Metro Station": [
+ ,
+ "Grosvenor-strathmore Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -37390,8 +37390,8 @@
     }
    }
   }
- ],
- "Medical Center Metro Station": [
+ ,
+ "Medical Center Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -38302,8 +38302,8 @@
     }
    }
   }
- ],
- "Bethesda Metro Station": [
+ ,
+ "Bethesda Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -39214,8 +39214,8 @@
     }
    }
   }
- ],
- "Foggy Bottom-gwu Metro Station": [
+ ,
+ "Foggy Bottom-gwu Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -40126,8 +40126,8 @@
     }
    }
   }
- ],
- "Court House Metro Station": [
+ ,
+ "Court House Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -41038,8 +41038,8 @@
     }
    }
   }
- ],
- "Clarendon Metro Station": [
+ ,
+ "Clarendon Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -41950,8 +41950,8 @@
     }
    }
   }
- ],
- "East Falls Church Metro Station": [
+ ,
+ "East Falls Church Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -42862,8 +42862,8 @@
     }
    }
   }
- ],
- "Virginia Square-gmu Metro Station": [
+ ,
+ "Virginia Square-gmu Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -43774,8 +43774,8 @@
     }
    }
   }
- ],
- "Ballston-mu Metro Station": [
+ ,
+ "Ballston-mu Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -44686,8 +44686,8 @@
     }
    }
   }
- ],
- "Farragut West Metro Station": [
+ ,
+ "Farragut West Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -45598,8 +45598,8 @@
     }
    }
   }
- ],
- "Farragut North Metro Station": [
+ ,
+ "Farragut North Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -46510,8 +46510,8 @@
     }
    }
   }
- ],
- "Woodley Park-zoo Metro": [
+ ,
+ "Woodley Park-zoo Metro": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -47422,8 +47422,8 @@
     }
    }
   }
- ],
- "L'enfant Plaza Metro Station": [
+ ,
+ "L'enfant Plaza Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -48334,8 +48334,8 @@
     }
    }
   }
- ],
- "Smithsonian Metro Station": [
+ ,
+ "Smithsonian Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -49246,8 +49246,8 @@
     }
    }
   }
- ],
- "Pentagon City Metro Station": [
+ ,
+ "Pentagon City Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -50158,8 +50158,8 @@
     }
    }
   }
- ],
- "Federal Triangle Metro Station": [
+ ,
+ "Federal Triangle Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -51070,8 +51070,8 @@
     }
    }
   }
- ],
- "Archives-navy Memorial Metro Station": [
+ ,
+ "Archives-navy Memorial Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -51982,8 +51982,8 @@
     }
    }
   }
- ],
- "Waterfront Metro Station": [
+ ,
+ "Waterfront Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -52894,8 +52894,8 @@
     }
    }
   }
- ],
- "National Airport Metro Station": [
+ ,
+ "National Airport Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -53806,8 +53806,8 @@
     }
    }
   }
- ],
- "Van Dorn Street Metro Station": [
+ ,
+ "Van Dorn Street Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -54718,8 +54718,8 @@
     }
    }
   }
- ],
- "Franconia-springfield Metro Station": [
+ ,
+ "Franconia-springfield Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -55630,8 +55630,8 @@
     }
    }
   }
- ],
- "Federal Center Sw Metro Station": [
+ ,
+ "Federal Center Sw Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -56542,8 +56542,8 @@
     }
    }
   }
- ],
- "Judiciary Square Metro Station": [
+ ,
+ "Judiciary Square Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -57454,8 +57454,8 @@
     }
    }
   }
- ],
- "Capitol South Metro Station": [
+ ,
+ "Capitol South Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -58366,8 +58366,8 @@
     }
    }
   }
- ],
- "Metro Center": [
+ ,
+ "Metro Center": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -59278,8 +59278,8 @@
     }
    }
   }
- ],
- "Gallery Pl-chinatown Metro Station": [
+ ,
+ "Gallery Pl-chinatown Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -60190,8 +60190,8 @@
     }
    }
   }
- ],
- "Mount Vernon Square Metro Station": [
+ ,
+ "Mount Vernon Square Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -61102,8 +61102,8 @@
     }
    }
   }
- ],
- "U Street Metro Station": [
+ ,
+ "U Street Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -62014,8 +62014,8 @@
     }
    }
   }
- ],
- "Union Station Metro Station": [
+ ,
+ "Union Station Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -62926,8 +62926,8 @@
     }
    }
   }
- ],
- "Congress Heights Metro Station": [
+ ,
+ "Congress Heights Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -63838,8 +63838,8 @@
     }
    }
   }
- ],
- "Naylor Road Metro Station": [
+ ,
+ "Naylor Road Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -64750,8 +64750,8 @@
     }
    }
   }
- ],
- "Suitland Metro Station": [
+ ,
+ "Suitland Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -65662,8 +65662,8 @@
     }
    }
   }
- ],
- "Branch Ave Metro Station": [
+ ,
+ "Branch Ave Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -66574,8 +66574,8 @@
     }
    }
   }
- ],
- "Braddock Road Metro Station": [
+ ,
+ "Braddock Road Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -67486,8 +67486,8 @@
     }
    }
   }
- ],
- "King Street Metro Station": [
+ ,
+ "King Street Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -68398,8 +68398,8 @@
     }
    }
   }
- ],
- "Eisenhower Avenue Metro Station": [
+ ,
+ "Eisenhower Avenue Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -69310,8 +69310,8 @@
     }
    }
   }
- ],
- "Huntington Metro Station": [
+ ,
+ "Huntington Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -70222,8 +70222,8 @@
     }
    }
   }
- ],
- "Anacostia Metro Station": [
+ ,
+ "Anacostia Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -71134,8 +71134,8 @@
     }
    }
   }
- ],
- "Eastern Market Metro Station": [
+ ,
+ "Eastern Market Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -72046,8 +72046,8 @@
     }
    }
   }
- ],
- "Potomac Ave Metro Station": [
+ ,
+ "Potomac Ave Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -72958,8 +72958,8 @@
     }
    }
   }
- ],
- "Stadium-armory Metro Station": [
+ ,
+ "Stadium-armory Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -73870,8 +73870,8 @@
     }
    }
   }
- ],
- "Rhode Island Ave Metro Station": [
+ ,
+ "Rhode Island Ave Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -74782,8 +74782,8 @@
     }
    }
   }
- ],
- "Minnesota Ave Metro Station": [
+ ,
+ "Minnesota Ave Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -75694,8 +75694,8 @@
     }
    }
   }
- ],
- "Van Ness-udc Metro Station": [
+ ,
+ "Van Ness-udc Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -76606,8 +76606,8 @@
     }
    }
   }
- ],
- "Cleveland Park Metro Station": [
+ ,
+ "Cleveland Park Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -77518,8 +77518,8 @@
     }
    }
   }
- ],
- "Columbia Heights Metro Station": [
+ ,
+ "Columbia Heights Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -78430,8 +78430,8 @@
     }
    }
   }
- ],
- "Spring Hill Metro Station": [
+ ,
+ "Spring Hill Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -79342,8 +79342,8 @@
     }
    }
   }
- ],
- "Greensboro Metro Station": [
+ ,
+ "Greensboro Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -80254,8 +80254,8 @@
     }
    }
   }
- ],
- "Tysons Corner Metro Station": [
+ ,
+ "Tysons Corner Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -81166,8 +81166,8 @@
     }
    }
   }
- ],
- "Mclean Metro Station": [
+ ,
+ "Mclean Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -82078,8 +82078,8 @@
     }
    }
   }
- ],
- "Wiehle-reston East Metro Station": [
+ ,
+ "Wiehle-reston East Metro Station": 
   {
    "College Park-u Of Md Metro Station": {
     "fares": {
@@ -82990,5 +82990,5 @@
     }
    }
   }
- ]
+ 
 }

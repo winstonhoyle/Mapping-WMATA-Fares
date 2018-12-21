@@ -94,9 +94,14 @@
       lines.addTo(map);
       
       map.fitBounds(stations.getBounds());
-
-      console.log(farejson[Object.keys(farejson)])
       
+      function GetFares(dept,arr){
+        peakfare = farejson[dept][0][arr].fares.peak;
+        return peakfare;
+      }
+      
+      fare = GetFares("Takoma Metro Station","Georgia Ave-petworth Metro Station");
+      console.log(fare);
       
     </script>
     <script src="./picklines.js">

@@ -1,5 +1,6 @@
 import csv
 import json
+from collections import defaultdict
 import GetField
 
 jsonformat = defaultdict(list)

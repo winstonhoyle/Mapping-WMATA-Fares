@@ -43,7 +43,7 @@
                   color: "#000000",
                   fillColor: "#ffffff",
                   fillOpacity: 1.0
-                  }).bindTooltip(feature.properties.MetroLine);
+                  }).bindTooltip(feature.properties.STAT_NAME);
             },
             filter: function(features) {
                   orangeStations = OnlyStations("orange");

@@ -2,20 +2,42 @@
       function Red() {
         if (!red) {
           map.removeLayer(lines);
+          map.removeLayer(stations);
+          
+          redStations = L.geoJson(stationjson, {
+            pointToLayer: function(feature, latlng) {
+                  return L.circleMarker(latlng, {
+                  radius: 5,
+                  color: "#000000",
+                  fillColor: "#ffffff",
+                  fillOpacity: 1.0
+                  }).bindTooltip(feature.properties.STAT_NAME);
+            },
+            filter: function(features) {
+                  redStations = OnlyStations("red");
+                  if (redStations.includes(features.properties.STAT_NAME)) return true;
+            }
+          });
           redline = L.geoJson(linejson, {
             style: function(feature) {
-              return { color: feature.properties.NAME};
+              return {
+                  weight: 6,
+                  color: feature.properties.NAME
+                  };
             },
             filter: function(feature) {
               if (feature.properties.NAME === "red") return true;
             }
           });
           redline.addTo(map);
+          redStations.addTo(map);
           map.fitBounds(redline.getBounds());
           red = true;
         } else {
           map.removeLayer(redline);
+          map.removeLayer(redStations);
           map.addLayer(lines);
+          map.addLayer(stations);
           map.fitBounds(lines.getBounds());
           red = false;
         }
@@ -49,10 +71,13 @@
                   orangeStations = OnlyStations("orange");
                   if (orangeStations.includes(features.properties.STAT_NAME)) return true;
             }
-         });
-         orangeline = L.geoJson(linejson, {
+          });
+          orangeline = L.geoJson(linejson, {
             style: function(feature) {
-                  return { color: feature.properties.NAME};
+              return {
+                  weight: 6,
+                  color: feature.properties.NAME
+                  };
             },
             filter: function(feature) {
               if (feature.properties.NAME === "orange") return true;
@@ -78,20 +103,42 @@
       function Silver() {
         if (!silver) {
           map.removeLayer(lines);
+          map.removeLayer(stations);
+          
+          silverStations = L.geoJson(stationjson, {
+            pointToLayer: function(feature, latlng) {
+                  return L.circleMarker(latlng, {
+                  radius: 5,
+                  color: "#000000",
+                  fillColor: "#ffffff",
+                  fillOpacity: 1.0
+                  }).bindTooltip(feature.properties.STAT_NAME);
+            },
+            filter: function(features) {
+                  silverStations = OnlyStations("silver");
+                  if (silverStations.includes(features.properties.STAT_NAME)) return true;
+            }
+          });
           silverline = L.geoJson(linejson, {
             style: function(feature) {
-              return { color: feature.properties.NAME};
+              return {
+                  weight: 6,
+                  color: feature.properties.NAME
+                  };
             },
             filter: function(feature) {
               if (feature.properties.NAME === "silver") return true;
             }
           });
           silverline.addTo(map);
+          silverStations.addTo(map);
           map.fitBounds(silverline.getBounds());
           silver = true;
         } else {
           map.removeLayer(silverline);
+          map.removeLayer(silverStations);
           map.addLayer(lines);
+          map.addLayer(stations);
           map.fitBounds(lines.getBounds());
           silver = false;
         }
@@ -105,20 +152,42 @@
       function Yellow() {
         if (!yellow) {
           map.removeLayer(lines);
+          map.removeLayer(stations);
+          
+          yellowStations = L.geoJson(stationjson, {
+            pointToLayer: function(feature, latlng) {
+                  return L.circleMarker(latlng, {
+                  radius: 5,
+                  color: "#000000",
+                  fillColor: "#ffffff",
+                  fillOpacity: 1.0
+                  }).bindTooltip(feature.properties.STAT_NAME);
+            },
+            filter: function(features) {
+                  yellowStations = OnlyStations("yellow");
+                  if (yellowStations.includes(features.properties.STAT_NAME)) return true;
+            }
+          });
           yellowline = L.geoJson(linejson, {
             style: function(feature) {
-              return { color: feature.properties.NAME};
+              return {
+                  weight: 6,
+                  color: feature.properties.NAME
+                  };
             },
             filter: function(feature) {
               if (feature.properties.NAME === "yellow") return true;
             }
           });
           yellowline.addTo(map);
+          yellowStations.addTo(map);
           map.fitBounds(yellowline.getBounds());
           yellow = true;
         } else {
           map.removeLayer(yellowline);
+          map.removeLayer(yellowStations);
           map.addLayer(lines);
+          map.addLayer(stations);
           map.fitBounds(lines.getBounds());
           yellow = false;
         }

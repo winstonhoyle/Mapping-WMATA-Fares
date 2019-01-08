@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width">
   <title>JS Bin</title>
   <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
-   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
-   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-   crossorigin=""/>
-   <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
-   integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
-   crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+  integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+  crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+  integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+  crossorigin=""></script>
 </head>
   <style>
     #mapid {
@@ -67,6 +67,46 @@
         }
       });
       
+      function highlightFeature(e) {
+        var target = e.target;
+        if (dept) {
+          stations.eachLayer(function(layer) {
+          layer.setStyle({
+            fillColor: getColor(GetFares(layer.feature.properties.STAT_NAME, target.feature.properties.STAT_NAME)),
+            radius: 8
+          });
+        });
+          dept = false;
+        } else {
+          stations.setStyle({
+            radius: 5,
+            color: "#000000",
+            fillColor: "#ffffff",
+            fillOpacity: 1.0
+          });
+          dept = true;
+        }
+        
+      }
+      
+      function onEachFeature(feature, layer) {
+        layer.on({
+          click: highlightFeature
+        });
+      }
+      
+      function getColor(d) {
+        return d > 1000 ? '#800026' :
+          d > 7.0  ? '#BD0026' :
+          d > 6.0  ? '#E31A1C' :
+          d > 5.0  ? '#FC4E2A' :
+          d > 4.0  ? '#FD8D3C' :
+          d > 3.0  ? '#FEB24C' :
+          d > 2.0  ? '#FED976' :
+                   '#FFEDA0';
+      }
+      
+      var dept = true;
       //creating stations layer
       var stations = L.geoJson(stationjson, {
         pointToLayer: function(feature, latlng) {
@@ -76,7 +116,8 @@
             fillColor: "#ffffff",
             fillOpacity: 1.0
           }).bindTooltip(feature.properties.STAT_NAME);
-        }
+        },
+        onEachFeature: onEachFeature
       });
       
       //creating lines layer
@@ -97,11 +138,9 @@
       
       function GetFares(dept,arr){
         peakfare = farejson[dept][arr].fares.peak;
-        return peakfare;
+        var fare = parseFloat(peakfare);
+        return fare;
       }
-      
-      fare = GetFares("Takoma Metro Station","Georgia Ave-petworth Metro Station");
-      console.log(fare);
       
     </script>
     <script src="./picklines.js">

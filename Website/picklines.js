@@ -7,7 +7,7 @@
        */
       function OnlyStations(color){
       //empty list
-        stationList = []
+        stationList = [];
       //for loop thay goes through all stations and retrieves the ones with the parameter of color
         for (var i=0; i < stationjson.features.length; i++){
           stationColor = stationjson.features[i].properties.MetroLine.split(",").map(function(item) {

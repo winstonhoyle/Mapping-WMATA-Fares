@@ -96,7 +96,7 @@
       map.fitBounds(stations.getBounds());
       
       function GetFares(dept,arr){
-        peakfare = farejson[dept][0][arr].fares.peak;
+        peakfare = farejson[dept][arr].fares.peak;
         return peakfare;
       }
       

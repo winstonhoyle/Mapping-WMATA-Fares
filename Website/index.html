@@ -120,6 +120,29 @@
         onEachFeature: onEachFeature
       });
       
+      
+      //TODO
+      //INTEGRATE THIS WITH PICKLINES.JS AND UPDATE LINES
+      function selection(feature,layer){
+        layer.on('click', function() {
+          this.setStyle({
+            'color': this.feature.properties.NAME,
+            'weight': 10
+          });
+          map.fitBounds(layer.getBounds());
+        });
+        layer.off('click', function(){
+          this.setStyle({
+            'color': this.feature.properties.NAME,
+            'weight': 6
+          });
+          map.fitBounds(lines.getBounds());
+        });
+        
+            
+        
+      }
+      
       //creating lines layer
       var lines = L.geoJson(linejson, {
         style: function(features) {
@@ -127,13 +150,16 @@
             weight: 6,
             color: features.properties.NAME
           };
+        },
+        onEachFeature: function(feature,layer){
+          selection(feature, layer);
         }
       });
       
       //adding stations and lines to map
       stations.addTo(map);
       lines.addTo(map);
-      
+      lines.bringToBack();
       map.fitBounds(stations.getBounds());
       
       function GetFares(dept,arr){

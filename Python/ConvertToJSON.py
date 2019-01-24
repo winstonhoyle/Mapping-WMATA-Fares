@@ -6,12 +6,12 @@ from GetField import getField
 jsonformat = defaultdict(list)
 
 ##Open csv
-csvfile = open(r"C:\Users\User\Documents\GitHub\Mapping-WMATA-Fares\Data\all_stations.csv", newline='')
+csvfile = open("all_stations.csv", newline='')
 dataList = list(csv.reader(csvfile,delimiter=","))[1:]
 csvfile.close()
 
 ##Get Stations
-stations = getField(r"C:\Users\User\Documents\GitHub\Mapping-WMATA-Fares\Data\shapefile\Metro_Stations\Metro_Stations.shp", "STAT_NAME")
+stations = getField("Metro_Stations.shp", "STAT_NAME")
 
 ##Create dictionary
 dic = {}
@@ -26,5 +26,5 @@ for station in stations:
     dic["{}".format(station)] = fares
 
 ##Create a json file
-with open(r"C:\Users\User\Documents\GitHub\Mapping-WMATA-Fares\Data\all_stations.json", "w") as jsonfile:
+with open("all_stations.json", "w") as jsonfile:
     json.dump(dic, jsonfile)

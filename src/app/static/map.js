@@ -45,7 +45,7 @@
       
       //Get fare information for a station
       function GetFares(dept,arr,fareType){
-        fareValue = farejson[dept][arr].fares[fareType];
+        fareValue = farejson[dept][arr]["fares"][fareType];
         return parseFloat(fareValue);
       }
       
@@ -72,11 +72,13 @@
         fareType=document.getElementById("Fare-selection").value;
         switch(fareType) {
           case "peak":
-            return d == 6.0 ? '#d7191c' :
-              d >= 5.0  ? '#fdae61' :
-              d >= 4.0  ? '#ffffbf' :
-              d >= 3.0  ? '#a6d96a' :
-              d >= 2.0  ? '#1a9641' :
+            return d == 6.0 ? '#d73027' :
+              d >= 5.0  ? '#fc8d59' :
+              d >= 4.0  ? '#fee08b' :
+              d >= 3.5  ? '#ffffbf' :
+              d >= 3.0  ? '#d9ef8b' :
+              d >= 2.5  ? '#91cf60' :
+              d >= 2.0  ? '#1a9850' :
                          '#000000';
           case "offpeak":
             return d == 3.85 ? '#d7191c' :
@@ -85,7 +87,7 @@
               d >= 2.5 ? '#a6d96a' :
               d >= 2  ? '#1a9641' :
                          '#000000';
-          case "reduced":
+          case "reduced_peak":
             return d == 3.00 ? '#d7191c' :
               d >= 2.5  ? '#fdae61' :
               d >= 2.0  ? '#ffffbf' :

@@ -3,7 +3,7 @@ import csv
 import GetField
 
 ##Get stations
-shp = "Metro_Stops.shp"
+shp = "../data/shapefile/Metro_Stops.shp"
 stations = GetField.getField(shp, "STAT_NAME")
 
 ##Base url string
@@ -11,7 +11,7 @@ url = "https://www.wmata.com/node/wmata/wmataAPI/tripPlanner"
 
 ##Large CSV creation
 ##Contains all data
-large_csv = open("all_stations.csv", 'w', newline="")
+large_csv = open("../data/all_stations.csv", 'w', newline="")
 large_filewriter = csv.writer(large_csv,delimiter=',', quotechar='|')
 large_filewriter.writerow(["Dept","Arriv", "ST_Peak","ST_Offpeak","RedST_Peak","RedST_OffPeak"])
 

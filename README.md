@@ -1,21 +1,22 @@
 # Mapping-WMATA-Fares
-This application helps visualize the confusing fare system of Washington Metropolitan Area Transit Authority (WMATA). 
+This application helps visualize the confusing fare system of Washington Metropolitan Area Transit Authority (WMATA).
 
 ## Prerequisites
 
-Python 3.x
-Flask 1.0.x+
-Linux (Windows works with minor file changes)
+1. Python 3.x
+2. Flask 1.0.x+
+3. GDAL (osgeo)
 
 ```bash
-cd src/
+cd src/app
 pip3 install -r requirements.txt
 ```
 
 ## Running the application
 
 ```python
-#TODO
+cd src/app
+python app.py
 ```
 
 ## Contributing

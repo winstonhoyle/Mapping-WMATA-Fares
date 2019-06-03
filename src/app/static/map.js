@@ -3,10 +3,11 @@
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href=http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }).addTo(map);
+      
       //geojson files
-      var station_url = "https://raw.githubusercontent.com/winstonhoyle/Mapping-WMATA-Fares/master/Data/geojson/Metro_Stations.geojson";
-      var line_url = "https://raw.githubusercontent.com/winstonhoyle/Mapping-WMATA-Fares/master/Data/geojson/Metro_Lines.geojson";
-      var fare_url = "https://raw.githubusercontent.com/winstonhoyle/Mapping-WMATA-Fares/master/Data/all_stations.json";
+      var station_url = "static/Metro_Stations.geojson";
+      var line_url = "static/Metro_Lines.geojson";
+      var fare_url = "static/all_stations.json";
       
       //formatting into json objects
       var stationjson = {};

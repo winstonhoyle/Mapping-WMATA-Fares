@@ -1,7 +1,7 @@
 # Mapping-WMATA-Fares
 This application helps visualize the confusing fare system of Washington Metropolitan Area Transit Authority (WMATA).
 
-[Check it out!](wmatafares.com)
+[Check it out!](http://wmatafares.com)
 
 ## Prerequisites
 

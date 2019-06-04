@@ -5,9 +5,9 @@
       }).addTo(map);
       
       //geojson files
-      var station_url = "static/Metro_Stations.geojson";
-      var line_url = "static/Metro_Lines.geojson";
-      var fare_url = "static/all_stations.json";
+      var station_path = "static/Metro_Stations.geojson";
+      var line_path = "static/Metro_Lines.geojson";
+      var fare_path = "static/all_stations.json";
       
       //formatting into json objects
       var stationjson = {};
@@ -16,7 +16,7 @@
       
       //getting station information
       $.ajax({
-        url:station_url,
+        url:station_path,
         async:false,
         dataType:'json',
         success: function(data){
@@ -26,7 +26,7 @@
       
       //getting line infomation
       $.ajax({
-        url:line_url,
+        url:line_path,
         async:false,
         dataType:'json',
         success: function(data){
@@ -36,7 +36,7 @@
     
       //getting fare information
       $.ajax({
-        url: fare_url,
+        url: fare_path,
         async: false,
         dataType: 'json',
         success: function(data) {
@@ -100,6 +100,11 @@
         }
       }
       
+      map.createPane("metro");
+      map.createPane("stations");
+      map.getPane("stations").style.zIndex=999;
+      map.getPane("metro").style.zIndex=200;
+      
       //creating stations layer
       var stations = L.geoJson(stationjson, {
         pointToLayer: function(feature, latlng) {
@@ -110,7 +115,8 @@
             fillOpacity: 1.0
           }).bindTooltip(feature.properties.STAT_NAME);
         },
-        onEachFeature: onEachFeature
+        onEachFeature: onEachFeature,
+        pane: "stations"
       });
       
       //creating lines layer
@@ -120,10 +126,8 @@
             weight: 6,
             color: features.properties.NAME
           };
-        }/*,
-        onEachFeature: function(feature,layer){
-          selection(feature, layer);
-        }*/
+        },
+        pane: "metro"
       });
       
       //adding stations and lines to map

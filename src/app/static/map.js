@@ -1,4 +1,4 @@
-//add basemap
+      //add basemap
       var map = L.map('mapid');
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href=http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -44,9 +44,42 @@
         }
       });
       
+      //legend
+      var legend = L.control({position: 'bottomright'});
+      legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend');
+            fareType=document.getElementById("Fare-selection").value;
+            var fares = [];
+            switch(fareType) {
+                  case "peak":
+                        fares = [6.0, 5.0, 4.0, 3.5, 3.0, 2.5, 2.0];
+                        colors = ['#d73027', '#fc8d59', '#fee08b', '#ffffbf', '#d9ef8b', '#91cf60', '#1a9850'];
+                        break;
+                  case "offpeak":
+                        fares = [3.85, 3.5, 3.0, 2.5, 2.0];
+                        colors = ['#d7191c', '#fdae61', '#ffffbf', '#a6d96a', '#1a9641'];
+                        break;
+                  case "reduced_peak":
+                        fares = [3.0, 2.5, 2.0, 1.5, 1.0];
+                        colors = ['#d7191c','#fdae61', '#ffffbf', '#a6d96a', '#1a9641'];
+                        break;
+                  case "":
+                        div.innerHTML = "Please selection a station";
+                        return div;
+            }
+            labels = [];
+            for (var i = 0; i < fares.length; i++) {
+                  item = '<i style="background:' + getColor(fares[i]) + ';"></i> $' + fares[i] + (fares[i-1] ? ' &ndash; ' + (fares[i-1]-0.01).toFixed(2) : "" );
+                  labels.push(item);
+            }
+            labels.push('<i style="background:#000000"></i> Your station');
+            div.innerHTML = labels.join('<br>');
+            return div;
+      };
+            
       //Get fare information for a station
       function GetFares(dept,arr,fareType){
-        fareValue = farejson[dept][arr]["fares"][fareType];
+        fareValue = farejson[dept][arr].fares[fareType];
         return parseFloat(fareValue);
       }
       
@@ -60,7 +93,8 @@
             radius: 5,
             weight: 1
           }).bindTooltip("<center>" + layer.feature.properties.STAT_NAME + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
-        }); 
+        });
+        map.addControl(legend);
       }
       
       function onEachFeature(feature, layer) {

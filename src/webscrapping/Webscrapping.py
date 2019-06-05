@@ -3,7 +3,7 @@ import csv
 import GetField
 
 ##Get stations
-shp = "../data/shapefile/Metro_Stops.shp"
+shp = "../data/shapefile/Metro_Stations.shp"
 stations = GetField.getField(shp, "STAT_NAME")
 
 ##Base url string
@@ -33,6 +33,8 @@ for depart_station in stations:
             continue
 
         ##Parameters for the url in dictionary format
+        ##FOR THIS TO WORK CHANGE THE MONTH AND DAY LEAVING
+        ##CHECK METRO SCHEDULE TO ENSURE ALL STATIONS ARE OPERATING ON THOSE DATES
         peak = {"travelby":"CLR","arrdep":"D", "hour-leaving":7,"minute-leaving":30,"period-leaving":"AM","month-leaving":12,"day-leaving":10,"route":"T","walk-distance":0.75,"location":depart_station, "destination":arriv_station}
         offpeak = {"travelby":"CLR","arrdep":"D", "hour-leaving":1,"minute-leaving":55,"period-leaving":"PM","month-leaving":12,"day-leaving":10,"route":"T","walk-distance":0.75,"location":depart_station, "destination":arriv_station}
         

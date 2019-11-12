@@ -35,20 +35,20 @@ for depart_station in stations:
         ##Parameters for the url in dictionary format
         ##FOR THIS TO WORK CHANGE THE MONTH AND DAY LEAVING
         ##CHECK METRO SCHEDULE TO ENSURE ALL STATIONS ARE OPERATING ON THOSE DATES
-        peak = {"travelby":"CLR","arrdep":"D", "hour-leaving":7,"minute-leaving":30,"period-leaving":"AM","month-leaving":12,"day-leaving":10,"route":"T","walk-distance":0.75,"location":depart_station, "destination":arriv_station}
-        offpeak = {"travelby":"CLR","arrdep":"D", "hour-leaving":1,"minute-leaving":55,"period-leaving":"PM","month-leaving":12,"day-leaving":10,"route":"T","walk-distance":0.75,"location":depart_station, "destination":arriv_station}
+        peak = {"travelby":"CLR","arrdep":"D", "hour-leaving":7,"minute-leaving":30,"period-leaving":"AM","month-leaving":11,"day-leaving":11,"route":"T","walk-distance":0.75,"location":depart_station, "destination":arriv_station}
+        offpeak = {"travelby":"CLR","arrdep":"D", "hour-leaving":1,"minute-leaving":55,"period-leaving":"PM","month-leaving":11,"day-leaving":11,"route":"T","walk-distance":0.75,"location":depart_station, "destination":arriv_station}
         
         ##Try/except block incase url doesn't go through
         try:
             ##Peak times url request and fare information
-            r_peak = requests.get(url, params=peak)
-            Smarttrip_peak = r_peak.json()["Response"]["Plantrip"]["Plantrip1"]["Itin"]["Extendedfare"]["Regular"]["Smartrip"]["Total"]
-            RedSmarttrip_peak = r_peak.json()["Response"]["Plantrip"]["Plantrip1"]["Itin"]["Extendedfare"]["Reduced"]["Smartrip"]["Total"]
+            r_peak = requests.get(url, params=peak).json()["Response"]["Plantrip"]["Plantrip1"]["Itin"]["Extendedfare"]
+            Smarttrip_peak = r_peak.json()["Regular"]["Smartrip"]["Total"]
+            RedSmarttrip_peak = r_peak.json()["Reduced"]["Smartrip"]["Total"]
 
             ##Offpeak times url request and fare information
-            r_offpeak = requests.get(url, params=offpeak)
-            Smarttrip_offpeak = r_offpeak.json()["Response"]["Plantrip"]["Plantrip1"]["Itin"]["Extendedfare"]["Regular"]["Smartrip"]["Total"]
-            RedSmarttrip_offpeak = r_offpeak.json()["Response"]["Plantrip"]["Plantrip1"]["Itin"]["Extendedfare"]["Reduced"]["Smartrip"]["Total"]
+            r_offpeak = requests.get(url, params=offpeak).json()["Response"]["Plantrip"]["Plantrip1"]["Itin"]["Extendedfare"]
+            Smarttrip_offpeak = r_offpeak.json()["Regular"]["Smartrip"]["Total"]
+            RedSmarttrip_offpeak = r_offpeak.json()["Reduced"]["Smartrip"]["Total"]
 
             ##Fare stats for individual
             fare_stats = [arriv_station,Smarttrip_peak,Smarttrip_offpeak,RedSmarttrip_peak,RedSmarttrip_offpeak]

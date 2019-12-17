@@ -1,11 +1,14 @@
-import os, sqlite3, csv, json
+import os
+import spatialite as spl
+import csv
+import json
 
 
 def create_connection(db_file):
     """ create a database connection to a SQLite database """
     conn = None
     try:
-        conn = sqlite3.connect(db_file)
+        conn = spl.connect(db_file)
         return conn
     except Error as e:
         print(e)
@@ -25,6 +28,8 @@ for station in stations_geojson['features']:
         stations[station_name] = k
         k += 1
 
+if os.path.isfile("data.db"):
+    os.remove("data.db")
 os.mkdir('tables')
 
 # Open standard fare information
@@ -84,16 +89,6 @@ with open('tables/fares.csv', 'r') as fares_table:
 
 cur.executemany('INSERT INTO fares VALUES (?,?,?,?,?,?);', to_db)
 con.commit()
-con.close()
-#
-# conn = create_connection("data.db")
-# cur = conn.cursor()
-# cur.execute("CREATE TABLE stations (SID, STATION);")
 
-# with open("tables/stations.csv", "wb") as f:
-#    dr = csv.DictReader(f)
-#    to_db = [(i['SID'], i['STATION']) for i in dr]
 
-# cur.executemany("INSERT INTO stations (SID, STATION) VALUES (?, ?);", to_db)
-# conn.commit()
-# conn.close()
+os.system("rm -rf tables")

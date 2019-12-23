@@ -1,14 +1,16 @@
 import os
-import spatialite as spl
+import psycopg2
 import csv
 import json
 
 
-def create_connection(db_file):
+def create_connection():
     """ create a database connection to a SQLite database """
     conn = None
     try:
-        conn = spl.connect(db_file)
+        conn = psycopg2.connect(
+            host='localhost', user='winston', password='winston', port=5432, database='gis'
+        )
         return conn
     except Error as e:
         print(e)
@@ -28,67 +30,49 @@ for station in stations_geojson['features']:
         stations[station_name] = k
         k += 1
 
-if os.path.isfile("data.db"):
-    os.remove("data.db")
-os.mkdir('tables')
+
+con = create_connection()
+cur = con.cursor()
 
 # Open standard fare information
 all_stations = open('all_stations.csv', 'r')
 reader = csv.reader(all_stations, delimiter=',')
 
-# Create and write in normalized table for fares information
-fares = open('tables/fares.csv', 'w')
-fares_writer = csv.writer(fares, delimiter=',')
-next(reader)
-fares_writer.writerow(
-    ['FID', 'DEPT_STATION', 'ARR_STATION', 'STND_PEAK', 'STND_OFFPEAK', 'REDUCED']
+# Create fares tavle
+cur.execute('DROP TABLE IF EXISTS fares;')
+cur.execute(
+    """CREATE TABLE fares (
+        fid int NOT NULL PRIMARY KEY,
+        dept int NOT NULL,
+        arr int NOT NULL,
+        peak real NOT NULL,
+        offpeak real NOT NULL,
+        reduced real NOT NULL
+        );"""
 )
+
+# Insert fares into table
+next(reader)
 for count, row in enumerate(reader):
     dept_station = row[0]
     arr_station = row[1]
-    fares_writer.writerow(
-        [count, stations[dept_station], stations[arr_station], row[2], row[3], row[4]]
+    data = (count, stations[dept_station], stations[arr_station], row[2], row[3], row[4])
+    cur.execute(
+        'INSERT INTO fares (fid,dept,arr,peak,offpeak,reduced) VALUES (%s, %s, %s, %s, %s, %s)',
+        data,
     )
-fares.close()
 
-# Create table for stations
-stations_file = open('tables/stations.csv', 'w')
-stations_writer = csv.writer(stations_file, delimiter=',')
-stations_writer.writerow(['SID', 'Station'])
-for key, value in stations.items():
-    stations_writer.writerow([value, key])
-stations_file.close()
-
-con = create_connection('data.db')
-cur = con.cursor()
-cur.execute('CREATE TABLE stations (sid INT, station STR, PRIMARY KEY(sid))')
-
-with open('tables/stations.csv', 'r') as stations_table:
-    dr = csv.DictReader(stations_table)
-    to_db = [(i['SID'], i['Station']) for i in dr]
-
-cur.executemany('INSERT INTO stations VALUES (?,?);', to_db)
-con.commit()
-
+# Create stations table
+cur.execute('DROP TABLE IF EXISTS stations;')
 cur.execute(
-    'CREATE TABLE fares (fid INT, dept INT, arr INT, peak REAL, offpeak REAL, reduced REAL, PRIMARY KEY(fid))'
+    """CREATE TABLE stations(
+        sid INT NOT NULL PRIMARY KEY,
+        station varchar(100));"""
 )
-with open('tables/fares.csv', 'r') as fares_table:
-    dr_fares = csv.DictReader(fares_table)
-    to_db = [
-        (
-            i['FID'],
-            i['DEPT_STATION'],
-            i['ARR_STATION'],
-            i['STND_PEAK'],
-            i['STND_OFFPEAK'],
-            i['REDUCED'],
-        )
-        for i in dr_fares
-    ]
 
-cur.executemany('INSERT INTO fares VALUES (?,?,?,?,?,?);', to_db)
+# Insert stations into postgres
+for key, value in stations.items():
+    cur.execute('INSERT INTO stations (sid, station) VALUES (%s, %s)', (value, key))
+
+cur.close()
 con.commit()
-
-
-os.system("rm -rf tables")

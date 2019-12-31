@@ -1,8 +1,21 @@
-docker build . -t app
+#!/bin/sh
 
+# Build app
+docker build . -t wmatafares
+
+# Run app
 docker run \
 	-e POSTGRES_USER=winston \
 	-e POSTGRES_PASS=winston \
 	-e POSTGRES_DBNAME=wmatafares \
 	-p 5432:5432 \
-	-itd app
+	-d \
+	--name app \
+	-it wmatafares
+
+# Sleep so the database can start up
+sleep 10
+
+# Run script to normalize tables and import geometry data
+docker exec -it app python3 data/normalize.py
+

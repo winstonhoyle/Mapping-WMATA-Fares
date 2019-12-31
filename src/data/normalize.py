@@ -5,6 +5,8 @@ from geomet import wkt
 import csv
 import json
 
+path = os.path.dirname(os.path.abspath(__file__))
+
 conn = psycopg2.connect(
     host='localhost', user='winston', password='winston', port=5432, database='wmatafares'
 )
@@ -12,8 +14,8 @@ register(conn)
 cur = conn.cursor()
 
 # Get station in a dictionary with pair an integer
-with open('geojson/Metro_Stations.geojson', 'r') as f:
-    stations_geojson = json.loads(f.read())
+with open(os.path.join(path,'geojson/Metro_Stations.geojson'), 'r') as f:
+    stations_geojson = json.loads(f.read())['features']
 
 # Create stations table
 cur.execute('DROP TABLE IF EXISTS stations;')
@@ -29,8 +31,7 @@ cur.execute(
 stations_ref = {}
 
 # Insert stations into stations table
-stations = stations_geojson['features']
-for station in stations:
+for station in stations_geojson:
     prop = station['properties']
     name = prop['STAT_NAME']
     sid = prop['OBJECTID']
@@ -45,7 +46,7 @@ for station in stations:
     )
 
 # Open standard fare information
-all_stations = open('all_stations.csv', 'r')
+all_stations = open(os.path.join(path, 'all_stations.csv'), 'r')
 reader = csv.reader(all_stations, delimiter=',')
 
 # Create fares tavle
@@ -88,11 +89,13 @@ cur.execute(
         geom geometry);"""
 )
 
-with open('geojson/Metro_Lines.geojson', 'r') as f:
-    lines_geojson = json.loads(f.read())
+with open(os.path.join(path, 'geojson/Metro_Lines.geojson'), 'r') as f:
+    lines_geojson = json.loads(f.read())["features"]
 
 for line in lines_geojson:
     props = line['properties']
+    if len(props["NAME"]) > 6:
+        continue
     data = (props['OBJECTID'], props['NAME'], wkt.dumps(line['geometry'], decimals=6))
     cur.execute('INSERT INTO lines (lid, line, geom) VALUES (%s, %s, %s)', data)
 

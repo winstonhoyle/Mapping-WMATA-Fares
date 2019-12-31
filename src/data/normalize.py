@@ -1,38 +1,48 @@
 import os
 import psycopg2
+from postgis.psycopg import register
+from geomet import wkt
 import csv
 import json
 
-
-def create_connection():
-    """ create a database connection to a SQLite database """
-    conn = None
-    try:
-        conn = psycopg2.connect(
-            host='localhost', user='winston', password='winston', port=5432, database='gis'
-        )
-        return conn
-    except Error as e:
-        print(e)
-
+conn = psycopg2.connect(
+    host='localhost', user='winston', password='winston', port=5432, database='wmatafares'
+)
+register(conn)
+cur = conn.cursor()
 
 # Get station in a dictionary with pair an integer
 with open('geojson/Metro_Stations.geojson', 'r') as f:
     stations_geojson = json.loads(f.read())
 
-stations = {}
-k = 0
-for station in stations_geojson['features']:
-    station_name = station['properties']['STAT_NAME']
-    if station_name in stations:
+# Create stations table
+cur.execute('DROP TABLE IF EXISTS stations;')
+cur.execute(
+    """CREATE TABLE stations(
+        sid INT NOT NULL PRIMARY KEY,
+        lines varchar(35),
+        station varchar(40),
+        geom geometry);"""
+)
+
+# Create a station reference to use in the fares for normalization
+stations_ref = {}
+
+# Insert stations into stations table
+stations = stations_geojson['features']
+for station in stations:
+    prop = station['properties']
+    name = prop['STAT_NAME']
+    sid = prop['OBJECTID']
+    if name in stations_ref:
         continue
     else:
-        stations[station_name] = k
-        k += 1
-
-
-con = create_connection()
-cur = con.cursor()
+        stations_ref[name] = sid
+    data = (sid, prop['MetroLine'], name, wkt.dumps(station['geometry'], decimals=6))
+    cur.execute(
+        'INSERT INTO stations (sid, lines, station, geom) VALUES (%s, %s, %s, ST_GeometryFromText(%s, 4326))',
+        data,
+    )
 
 # Open standard fare information
 all_stations = open('all_stations.csv', 'r')
@@ -56,23 +66,35 @@ next(reader)
 for count, row in enumerate(reader):
     dept_station = row[0]
     arr_station = row[1]
-    data = (count, stations[dept_station], stations[arr_station], row[2], row[3], row[4])
+    data = (
+        count,
+        stations_ref[dept_station],
+        stations_ref[arr_station],
+        row[2],
+        row[3],
+        row[4],
+    )
     cur.execute(
         'INSERT INTO fares (fid,dept,arr,peak,offpeak,reduced) VALUES (%s, %s, %s, %s, %s, %s)',
         data,
     )
 
-# Create stations table
-cur.execute('DROP TABLE IF EXISTS stations;')
+# Create lines table
+cur.execute('DROP TABLE IF EXISTS lines;')
 cur.execute(
-    """CREATE TABLE stations(
-        sid INT NOT NULL PRIMARY KEY,
-        station varchar(100));"""
+    """CREATE TABLE lines(
+        lid INT NOT NULL PRIMARY KEY,
+        line varchar(6),
+        geom geometry);"""
 )
 
-# Insert stations into postgres
-for key, value in stations.items():
-    cur.execute('INSERT INTO stations (sid, station) VALUES (%s, %s)', (value, key))
+with open('geojson/Metro_Lines.geojson', 'r') as f:
+    lines_geojson = json.loads(f.read())
+
+for line in lines_geojson:
+    props = line['properties']
+    data = (props['OBJECTID'], props['NAME'], wkt.dumps(line['geometry'], decimals=6))
+    cur.execute('INSERT INTO lines (lid, line, geom) VALUES (%s, %s, %s)', data)
 
 cur.close()
-con.commit()
+conn.commit()

@@ -4,28 +4,18 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
+	"log"
+	"net/http"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "winston"
-	password = "winston"
-	dbname   = "wmatafares"
-)
+var db *sql.DB
 
 func main() {
-
-	var (
-		sid     int
-		lines   string
-		station string
-		geom string
-	)
+	var err error
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
-	db, err := sql.Open("postgres", psqlInfo)
+	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
 	}
@@ -36,23 +26,7 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Connected!")
-
-	fmt.Println("Querying")
-
-	rows, err := db.Query("SELECT sid, lines, station, ST_AsGeoJSON(geom) FROM stations")
-	if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		fmt.Println("Scanning")
-		err = rows.Scan(&sid, &lines, &station, &geom)
-		if err != nil {
-			panic(err)
-		}
-
-		fmt.Println(sid, lines, station, geom)
-	}
-
+	http.HandleFunc("/stations", all_stations_handler)
+	http.HandleFunc("/lines", all_lines_handler)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

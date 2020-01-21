@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 *.pyw
+*.swp
 src/app/static/Metro_Lines.geojson
 src/app/static/Metro_Stations.geojson
 src/app/static/all_stations.json

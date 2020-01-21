@@ -12,6 +12,18 @@ const (
 	dbname   = "wmatafares"
 )
 
+func line_names() string {
+	var colors string
+	row := db.QueryRow("SELECT json_build_object('lines', json_agg(line)) FROM lines;")
+	err := row.Scan(&colors)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	fmt.Println("data returned")
+	return colors
+}
+
 func station_names() string {
 	var names string
 	row := db.QueryRow("SELECT json_build_object('stations', json_agg(station)) FROM stations;")

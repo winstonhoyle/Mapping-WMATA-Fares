@@ -64,7 +64,7 @@ func all_lines() string {
 
 func all_fares() string {
 	var fares string
-	row := db.QueryRow("SELECT json_build_object( 'type', 'FeatureCollection', 'features', jsonb_agg(features.feature) ) FROM ( SELECT jsonb_build_object( 'type','Feature', 'id', fid, 'properties', json_build_object( 'peak', peak, 'offpeak', offpeak, 'reduced', reduced ) ) AS feature FROM ( SELECT fares.fid, dept.station, arr.station, peak, offpeak, reduced FROM fares LEFT JOIN stations dept ON fares.dept = dept.sid LEFT JOIN stations arr ON fares.arr = arr.sid ) fares_norm ) features;")
+	row := db.QueryRow("SELECT json_build_object( 'fares', jsonb_agg(features.feature) ) FROM ( SELECT jsonb_build_object( 'dept', d_stat, 'arr', a_stat, 'peak', peak, 'offpeak', offpeak, 'reduced', reduced ) AS feature FROM ( SELECT dept.station as d_stat, arr.station as a_stat, peak, offpeak, reduced FROM fares LEFT JOIN stations dept ON fares.dept = dept.sid LEFT JOIN stations arr ON fares.arr = arr.sid ) fares_norm ) features;")
 	err := row.Scan(&fares)
 	if err != nil {
 		fmt.Println(err)
@@ -76,7 +76,7 @@ func all_fares() string {
 
 func all_fares_with_geom() string {
 	var fares string
-	row := db.QueryRow("SELECT json_build_object( 'type', 'FeatureCollection', 'features', jsonb_agg(features.feature) ) FROM ( SELECT jsonb_build_object( 'type','Feature', 'id', fid, 'geometry',ST_AsGeoJSON(geom)::jsonb, 'properties', json_build_object( 'peak', peak, 'offpeak', offpeak, 'reduced', reduced ) ) AS feature FROM ( SELECT fares.fid, dept.station, arr.station, peak, offpeak, reduced,arr.geom FROM fares LEFT JOIN stations dept ON fares.dept = dept.sid LEFT JOIN stations arr ON fares.arr = arr.sid ) fares_norm ) features;")
+	row := db.QueryRow("SELECT json_build_object( 'type', 'FeatureCollection', 'features', jsonb_agg(features.feature) ) FROM ( SELECT jsonb_build_object( 'type','Feature', 'id', fid, 'geometry',ST_AsGeoJSON(geom)::jsonb, 'properties', json_build_object( 'dept', d_stat, 'arr', a_stat, 'peak', peak, 'offpeak', offpeak, 'reduced', reduced ) ) AS feature FROM ( SELECT fares.fid, dept.station as d_stat, arr.station as a_stat, peak, offpeak, reduced,arr.geom FROM fares LEFT JOIN stations dept ON fares.dept = dept.sid LEFT JOIN stations arr ON fares.arr = arr.sid ) fares_norm ) features;")
 	err := row.Scan(&fares)
 	if err != nil {
 		fmt.Println(err)

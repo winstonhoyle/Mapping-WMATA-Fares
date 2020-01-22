@@ -24,3 +24,12 @@ func all_lines_handler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprintf(w, all_lines())
 }
+
+func all_fares_handler(w http.ResponseWriter, r *http.Request) {
+	keys := r.URL.Query().Get("geom")
+	if strings.ToLower(keys) == "true" {
+		fmt.Fprintf(w, all_fares_with_geom())
+		return
+	}
+	fmt.Fprintf(w, all_fares())
+}

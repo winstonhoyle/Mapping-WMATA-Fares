@@ -28,5 +28,6 @@ func main() {
 	fmt.Println("Connected!")
 	http.HandleFunc("/stations", all_stations_handler)
 	http.HandleFunc("/lines", all_lines_handler)
+	http.HandleFunc("/fares", all_fares_handler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

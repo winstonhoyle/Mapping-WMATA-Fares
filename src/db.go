@@ -61,3 +61,27 @@ func all_lines() string {
 	return lines
 
 }
+
+func all_fares() string {
+	var fares string
+	row := db.QueryRow("SELECT json_build_object( 'type', 'FeatureCollection', 'features', jsonb_agg(features.feature) ) FROM ( SELECT jsonb_build_object( 'type','Feature', 'id', fid, 'properties', json_build_object( 'peak', peak, 'offpeak', offpeak, 'reduced', reduced ) ) AS feature FROM ( SELECT fares.fid, dept.station, arr.station, peak, offpeak, reduced FROM fares LEFT JOIN stations dept ON fares.dept = dept.sid LEFT JOIN stations arr ON fares.arr = arr.sid ) fares_norm ) features;")
+	err := row.Scan(&fares)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	fmt.Println("data returned")
+	return fares
+}
+
+func all_fares_with_geom() string {
+	var fares string
+	row := db.QueryRow("SELECT json_build_object( 'type', 'FeatureCollection', 'features', jsonb_agg(features.feature) ) FROM ( SELECT jsonb_build_object( 'type','Feature', 'id', fid, 'geometry',ST_AsGeoJSON(geom)::jsonb, 'properties', json_build_object( 'peak', peak, 'offpeak', offpeak, 'reduced', reduced ) ) AS feature FROM ( SELECT fares.fid, dept.station, arr.station, peak, offpeak, reduced,arr.geom FROM fares LEFT JOIN stations dept ON fares.dept = dept.sid LEFT JOIN stations arr ON fares.arr = arr.sid ) fares_norm ) features;")
+	err := row.Scan(&fares)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	fmt.Println("data returned")
+	return fares
+}

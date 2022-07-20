@@ -1,6 +1,7 @@
 import os
 from dotenv import dotenv_values
 
+
 class Config:
     def __init__(self, path: str):
         env_vals = dotenv_values(path)

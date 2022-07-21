@@ -4,13 +4,14 @@ import sqlite3
 
 from requests import Response, get
 
-# To be used in future versions
-from config import Config
-
-config = Config('.env')
-
+# Get station dict info
 with open('data/metro_stations.geojson', 'r') as f:
     stations_dict = json.load(f)
+
+# Closed stations info, will insert 0 for fare information, some stations are closed for months
+with open('data/closed_stations.json', 'r') as f:
+    closed_stations_dict = json.load(f)
+    closed_stations = closed_stations_dict['closed']
 
 # Create `fares.db`
 db = 'fares.db'
@@ -67,96 +68,102 @@ insert_fare_sql = """
 INSERT INTO fares(dept, arr, peak, offpeak, reduced) VALUES(?, ?, ?, ?, ?)
 """
 
-url = 'https://www.wmata.com/node/wmata/wmataAPI/tripPlanner'
-
 # Function because WMATA Tripplanner API sometimes wants LatLong and sometimes does not
-def reformat_request(params: dict) -> Response:
-    params.pop('locationlatlong')
-    params.pop('destinationlatlong')
+def format_request(params: dict) -> Response:
+    url = 'https://www.wmata.com/node/wmata/wmataAPI/tripPlanner'
     resp = get(url, params=params)
     if 'Error' in resp.json():
-        print(f"{params['location']} to {params['destination']}")
-        print(resp.json())
-        print(resp.url + '\n')
+        if 'locationlatlong' in params:
+            params.pop('locationlatlong')
+            params.pop('destinationlatlong')
+        resp = get(url, params=params)
     return resp
 
 
-for did, dept, dept_coords in station_names_tuple:
+def get_fare(location: tuple, destination: tuple) -> tuple:
+    # Tuple variables
+    lid = location[0]
+    location_station = location[1]
+    location_coords = location[2]
+    did = destination[0]
+    destination_station = destination[1]
+    destination_coords = destination[2]
+
+    if (
+        lid == did
+        or destination_station in closed_stations
+        or location_station in closed_stations
+    ):
+        # $0.00 because the stations are the same
+        record = (lid, did, 0.0, 0.0, 0.0)
+        return record
+
+    params = {
+        'location': location_station,
+        'destination': destination_station,
+        'travelby': 'CLR',
+        'arrdep': 'D',
+        'hour-leaving': '8',
+        'minute-leaving': '00',
+        'day-leaving': '25',
+        'walk-distance': '0.25',
+        'month-leaving': '7',
+        'period-leaving': 'AM',
+        'route': 'W',
+        'locationlatlong': location_coords,
+        'destinationlatlong': destination_coords,
+    }
+
+    # Get Peak fare information
+    resp_peak = format_request(params=params)
+    resp_peak_dict = resp_peak.json()
+    # If an error set value at 0
+    if 'Error' in resp_peak_dict:
+        print(f'Error in response: {location[1]} -> {destination[1]}')
+        print(f'Error json: {json.dumps(resp_peak_dict)}')
+        peak = 0.0
+        reduced = 0.0
+
+    # Get offpeak fare, seperate request
+    # Update time to offpeak
+    params['hour-leaving'] = '11'
+    params['minute-leaving'] = '30'
+    resp_offpeak = format_request(params=params)
+    resp_offpeak_dict = resp_offpeak.json()
+    # If still an error set value at 0
+    if 'Error' in resp_offpeak_dict:
+        print(f'Error in response: {location[1]} -> {destination[1]}')
+        offpeak = 0.0
+
+    try:
+        peak = float(
+            resp_peak_dict['Response']['Plantrip']['Plantrip1']['Itin']['Regularfare']
+        )
+        reduced = float(
+            resp_peak_dict['Response']['Plantrip']['Plantrip1']['Itin']['Reducedfare']
+        )
+        offpeak = float(
+            resp_offpeak_dict['Response']['Plantrip']['Plantrip1']['Itin']['Regularfare']
+        )
+    except KeyError:
+        peak = 0.0
+        offpeak = 0.0
+        reduced = 0.0
+        print(f'Error in get_fares func: {location_station} -> {destination_station}')
+
+    return (lid, did, peak, offpeak, reduced)
+
+
+# Get fare info and insert into database
+for location in station_names_tuple:
     records = []
-    for aid, arr, arr_coords in station_names_tuple:
-        # If stations are the same
-        if did == aid:
-            # $0.00 because the stations are the same
-            record = (did, aid, 0.0, 0.0, 0.0)
-            cursor.execute(insert_fare_sql, record)
-            continue
-
-        peak_params = {
-            'location': dept,
-            'destination': arr,
-            'travelby': 'CLR',
-            'arrdep': 'D',
-            'hour-leaving': '8',
-            'minute-leaving': '00',
-            'day-leaving': '26',
-            'walk-distance': '0.25',
-            'month-leaving': '9',
-            'period-leaving': 'AM',
-            'route': 'W',
-            'locationlatlong': dept_coords,
-            'destinationlatlong': arr_coords,
-        }
-
-        offpeak_params = {
-            'location': dept,
-            'destination': arr,
-            'travelby': 'CLR',
-            'arrdep': 'D',
-            'hour-leaving': '11',
-            'minute-leaving': '30',
-            'day-leaving': '26',
-            'walk-distance': '0.25',
-            'month-leaving': '9',
-            'period-leaving': 'AM',
-            'route': 'W',
-            'locationlatlong': dept_coords,
-            'destinationlatlong': arr_coords,
-        }
-
-        # Get Peak fare information
-        resp_peak = get(url, params=peak_params)
-        # If an error redo the request but without latlong as it causes problems at some stations
-        if 'Error' in resp_peak.json():
-            resp_peak = reformat_request(peak_params)
-        else:
-            resp_peak_dict = resp_peak.json()
-            peak = float(
-                resp_peak_dict['Response']['Plantrip']['Plantrip1']['Itin']['Regularfare']
-            )
-            reduced = float(
-                resp_peak_dict['Response']['Plantrip']['Plantrip1']['Itin']['Reducedfare']
-            )
-
-        # Get offpeak fare, seperate request
-        resp_offpeak = get(url, params=offpeak_params)
-        # If an error redo the request but without latlong as it causes problems at some stations
-        if 'Error' in resp_offpeak.json():
-            resp_offpeak = reformat_request(offpeak_params)
-        else:
-            resp_offpeak_dict = resp_offpeak.json()
-            offpeak = float(
-                resp_offpeak_dict['Response']['Plantrip']['Plantrip1']['Itin']['Regularfare']
-            )
-
-        # Save records for bulk insert
-        record = (did, aid, peak, offpeak, reduced)
+    for destination in station_names_tuple:
+        record = get_fare(location=location, destination=destination)
         records.append(record)
 
     # Commit after each station
     cursor.executemany(insert_fare_sql, records)
     conn.commit()
-    # Clean for new station
-    records = []
 
 # Clean
 del cursor

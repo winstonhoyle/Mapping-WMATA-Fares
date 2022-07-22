@@ -2,7 +2,7 @@ import json
 import os
 import sqlite3
 
-from requests import Response, get
+from requests import JSONDecodeError, Response, get
 
 # Get station dict info
 with open('data/metro_stations.geojson', 'r') as f:
@@ -105,9 +105,9 @@ def get_fare(location: tuple, destination: tuple) -> tuple:
         'arrdep': 'D',
         'hour-leaving': '8',
         'minute-leaving': '00',
-        'day-leaving': '25',
+        'day-leaving': '1',
         'walk-distance': '0.25',
-        'month-leaving': '7',
+        'month-leaving': '9',
         'period-leaving': 'AM',
         'route': 'W',
         'locationlatlong': location_coords,
@@ -115,25 +115,29 @@ def get_fare(location: tuple, destination: tuple) -> tuple:
     }
 
     # Get Peak fare information
-    resp_peak = format_request(params=params)
-    resp_peak_dict = resp_peak.json()
-    # If an error set value at 0
-    if 'Error' in resp_peak_dict:
-        print(f'Error in response: {location[1]} -> {destination[1]}')
-        print(f'Error json: {json.dumps(resp_peak_dict)}')
-        peak = 0.0
-        reduced = 0.0
+    try:
+        resp_peak = format_request(params=params)
+        resp_peak_dict = resp_peak.json()
+        # If an error set value at 0
+        if 'Error' in resp_peak_dict:
+            print(f'Error in response: {location[1]} -> {destination[1]}')
+            print(f'Error json: {json.dumps(resp_peak_dict)}')
+    except Exception as e:
+        print(f'Exception: {location[1]} -> {destination[1]} \n {e}')
 
     # Get offpeak fare, seperate request
     # Update time to offpeak
     params['hour-leaving'] = '11'
     params['minute-leaving'] = '30'
-    resp_offpeak = format_request(params=params)
-    resp_offpeak_dict = resp_offpeak.json()
-    # If still an error set value at 0
-    if 'Error' in resp_offpeak_dict:
-        print(f'Error in response: {location[1]} -> {destination[1]}')
-        offpeak = 0.0
+    try:
+        resp_offpeak = format_request(params=params)
+        resp_offpeak_dict = resp_offpeak.json()
+        # If still an error set value at 0
+        if 'Error' in resp_offpeak_dict:
+            print(f'Error in response: {location[1]} -> {destination[1]}')
+            print(f'Error json: {json.dumps(resp_peak_dict)}')
+    except Exception as e:
+        print(f'Exception: {location[1]} -> {destination[1]} \n {e}')
 
     try:
         peak = float(
@@ -145,11 +149,11 @@ def get_fare(location: tuple, destination: tuple) -> tuple:
         offpeak = float(
             resp_offpeak_dict['Response']['Plantrip']['Plantrip1']['Itin']['Regularfare']
         )
-    except KeyError:
+    except (KeyError, UnboundLocalError) as e:
         peak = 0.0
         offpeak = 0.0
         reduced = 0.0
-        print(f'Error in get_fares func: {location_station} -> {destination_station}')
+        print(f'Error in get_fares func: {location_station} -> {destination_station}\n{e}')
 
     return (lid, did, peak, offpeak, reduced)
 

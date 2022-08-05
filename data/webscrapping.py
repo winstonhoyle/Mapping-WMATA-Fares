@@ -1,8 +1,15 @@
 import json
-import os
-import sqlite3
+from datetime import datetime
+from time import sleep
 
-from requests import JSONDecodeError, Response, get
+from data.station import Station, StationPair, Fare
+from database.database import Database
+
+# Set time for fares webscrapping. Set a time in the future with limited service disruptions
+# This time is the peak time, the code handles nonpeak time. Peak is only rush hour on weekdays
+# If any service disruptions please add those stations to `closed_stations.json`
+# year, month, day, hour, minute, second format
+time = datetime(2022, 10, 1, 8, 30, 0)
 
 # Get station dict info
 with open('data/metro_stations.geojson', 'r') as f:
@@ -13,42 +20,13 @@ with open('data/closed_stations.json', 'r') as f:
     closed_stations_dict = json.load(f)
     closed_stations = closed_stations_dict['closed']
 
-# Create `fares.db`
-db = 'fares.db'
-if os.path.isfile(db):
-    os.remove(db)
-
-conn = sqlite3.connect(db)
-cursor = conn.cursor()
-
-# Create stations table
-create_stations_table_sql = """
-CREATE TABLE stations (
-    sid int PRIMARY KEY,
-    station TEXT,
-    coordinates TEXT
-);
-"""
-cursor.execute(create_stations_table_sql)
-
-# Create fares table
-create_fares_table_sql = """
-CREATE TABLE fares (
-    dept TEXT,
-    arr TEXT,
-    peak REAL,
-    offpeak REAL,
-    reduced REAL
-);
-"""
-cursor.execute(create_fares_table_sql)
-
-# Commit the creation of two tables
-conn.commit()
+# Create fares database
+db_file = 'fares.db'
+database = Database(db_file, create_tables=True)
 
 # Get station names
-station_names_tuple = [
-    (
+station_objects = [
+    Station(
         i,
         feature['properties']['NAME'],
         ','.join(map(str, feature['geometry']['coordinates'][::-1])),
@@ -56,119 +34,63 @@ station_names_tuple = [
     for i, feature in enumerate(stations_dict['features'])
 ]
 
-# Insert names into db and commit
-insert_station_names_table_sql = """
-INSERT INTO stations(sid, station, coordinates) VALUES(?, ?, ?);
-"""
-cursor.executemany(insert_station_names_table_sql, station_names_tuple)
-conn.commit()
-
-# Insert fare information into db
-insert_fare_sql = """
-INSERT INTO fares(dept, arr, peak, offpeak, reduced) VALUES(?, ?, ?, ?, ?)
-"""
-
-# Function because WMATA Tripplanner API sometimes wants LatLong and sometimes does not
-def format_request(params: dict) -> Response:
-    url = 'https://www.wmata.com/node/wmata/wmataAPI/tripPlanner'
-    resp = get(url, params=params)
-    if 'Error' in resp.json():
-        if 'locationlatlong' in params:
-            params.pop('locationlatlong')
-            params.pop('destinationlatlong')
-        resp = get(url, params=params)
-    return resp
+database.insert_station_names(station_objects)
 
 
-def get_fare(location: tuple, destination: tuple) -> tuple:
-    # Tuple variables
-    lid = location[0]
-    location_station = location[1]
-    location_coords = location[2]
-    did = destination[0]
-    destination_station = destination[1]
-    destination_coords = destination[2]
+def get_station_pair(departure_station: Station, arrival_station: Station) -> StationPair:
+    """Return a StationPair object
+    
+    Get fare information by creating `StationPair` object, it's in this file due to
+    closed_stations only being available in this file. 
+    """
+    station_pair = StationPair(departure_station, arrival_station, time=time)
 
     if (
-        lid == did
-        or destination_station in closed_stations
-        or location_station in closed_stations
+        arrival_station.id == departure_station.id
+        or departure_station.name in closed_stations
+        or arrival_station.name in closed_stations
     ):
         # $0.00 because the stations are the same
-        record = (lid, did, 0.0, 0.0, 0.0)
-        return record
+        fare = Fare(peak=0.0, offpeak=0.0, reduced=0.0)
+        station_pair.set_fare(fare)
 
-    params = {
-        'location': location_station,
-        'destination': destination_station,
-        'travelby': 'CLR',
-        'arrdep': 'D',
-        'hour-leaving': '8',
-        'minute-leaving': '00',
-        'day-leaving': '1',
-        'walk-distance': '0.25',
-        'month-leaving': '9',
-        'period-leaving': 'AM',
-        'route': 'W',
-        'locationlatlong': location_coords,
-        'destinationlatlong': destination_coords,
-    }
+        return station_pair
 
-    # Get Peak fare information
-    try:
-        resp_peak = format_request(params=params)
-        resp_peak_dict = resp_peak.json()
-        # If an error set value at 0
-        if 'Error' in resp_peak_dict:
-            print(f'Error in response: {location[1]} -> {destination[1]}')
-            print(f'Error json: {json.dumps(resp_peak_dict)}')
-    except Exception as e:
-        print(f'Exception: {location[1]} -> {destination[1]} \n {e}')
+    station_pair = StationPair(departure_station, arrival_station)
+    fare = station_pair.get_fare()
+    station_pair.set_fare(fare)
 
-    # Get offpeak fare, seperate request
-    # Update time to offpeak
-    params['hour-leaving'] = '11'
-    params['minute-leaving'] = '30'
-    try:
-        resp_offpeak = format_request(params=params)
-        resp_offpeak_dict = resp_offpeak.json()
-        # If still an error set value at 0
-        if 'Error' in resp_offpeak_dict:
-            print(f'Error in response: {location[1]} -> {destination[1]}')
-            print(f'Error json: {json.dumps(resp_peak_dict)}')
-    except Exception as e:
-        print(f'Exception: {location[1]} -> {destination[1]} \n {e}')
-
-    try:
-        peak = float(
-            resp_peak_dict['Response']['Plantrip']['Plantrip1']['Itin']['Regularfare']
-        )
-        reduced = float(
-            resp_peak_dict['Response']['Plantrip']['Plantrip1']['Itin']['Reducedfare']
-        )
-        offpeak = float(
-            resp_offpeak_dict['Response']['Plantrip']['Plantrip1']['Itin']['Regularfare']
-        )
-    except (KeyError, UnboundLocalError) as e:
-        peak = 0.0
-        offpeak = 0.0
-        reduced = 0.0
-        print(f'Error in get_fares func: {location_station} -> {destination_station}\n{e}')
-
-    return (lid, did, peak, offpeak, reduced)
+    return station_pair
 
 
 # Get fare info and insert into database
-for location in station_names_tuple:
-    records = []
-    for destination in station_names_tuple:
-        record = get_fare(location=location, destination=destination)
-        records.append(record)
+station_obj_len = len(station_objects)
+count = 1
+for departure_station in station_objects:
+    station_pairs_data = []
+    for arrival_station in station_objects:
+        # Get `StationPair` object
+        station_pair = get_station_pair(
+            departure_station=departure_station, arrival_station=arrival_station
+        )
+        # Sleep timer to so there isn't continous requests to wmata. Was causing handshake errors
+        sleep(0.5)
+        # Create tuple and add to list for db insertion at end of loop
+        fare_data = (
+            station_pair.departure_station.id,
+            station_pair.arrival_station.id,
+            station_pair.fare.peak,
+            station_pair.fare.offpeak,
+            station_pair.fare.reduced,
+        )
+        station_pairs_data.append(fare_data)
 
     # Commit after each station
-    cursor.executemany(insert_fare_sql, records)
-    conn.commit()
+    database.insert_fares(station_pairs_data)
+    database.conn.commit()
+    print(f"{departure_station.name}: {count}/{station_obj_len}")
+    count+=1
 
 # Clean
-del cursor
-del conn
+del database.cursor
+del database.conn

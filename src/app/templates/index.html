@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Mapping WMATA Fares</title>
+  <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+  integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+  crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+  integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+  crossorigin=""></script>
+</head>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden
+    }
+    #mapid {
+      position: relative;
+      height:100%;
+      width: 100%;
+    }
+    .overlay {
+      position: absolute;
+      background: white;
+      z-index: 1000;
+      border: double;
+      padding: 10px;
+    }
+    .info {
+      padding: 6px 8px;
+      font: 14px/16px Arial, Helvetica, sans-serif;
+      background: white;
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border-radius: 5px;
+    }
+    .legend {
+      text-align: left;
+      line-height: 18px;
+      color: #555;
+      clear: both;
+    }
+    .legend i {
+      width: 18px;
+      height: 18px;
+      float: left;
+      margin-right: 8px;
+      opacity: 1;
+    }
+  </style>
+<body>
+  <div id="mapid">
+  <div class="overlay">
+    <center>
+      <h1>Mapping WMATA Fares</h1>
+      <h4>Version: 0.0.2</h4>
+      <h3>GitHub: <a href="https://github.com/winstonhoyle/Mapping-WMATA-Fares">Mapping-WMATA-Fares</a></h3>
+    </center>
+    <script src="../static/picklines.js"></script>
+    <input type="button" onclick="Red()" value="Red" id="redButton">
+    <input type="button" onclick="Orange()" value="Orange" id="orangeButton"/>
+    <input type="button" onclick="Silver()" value="Silver" id="silverButton"/>
+    <input type="button" onclick="Yellow()" value="Yellow" id="yellowButton"/>
+    <input type="button" onclick="Blue()" value="Blue" id="blueButton"/>
+    <input type="button" onclick="Green()" value="Green" id="greenButton"/>
+    <select id="Fare-selection">
+      <option value="">Fare Type</option>
+      <option value="peak">Peak</option>
+      <option value="offpeak">Offpeak</option>
+      <option value="reduced_peak">Reduced</option>
+    </select>
+  </div>  
+    <script src="../static/map.js"></script>
+  </div>
+</body>
+</html>

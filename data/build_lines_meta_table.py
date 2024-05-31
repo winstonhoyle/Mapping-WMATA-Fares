@@ -22,17 +22,18 @@ def main(api_key):
 
     # Create stations table
     df = pandas.read_csv('csv/stations.csv')
-    df.to_sql('stations', con, if_exists='fail', index=True, index_label='station_index')
+    df.to_sql('stations', con, if_exists='fail', index=False)
     del df
     con.commit()
 
     # Create fares table
     df = pandas.read_csv('csv/fares.csv')
-    df.to_sql('fares', con, if_exists='fail', index=False)
-    del df
+    df.to_sql('fares', con, if_exists='fail', index=True, index_label='fare_idx')
+
     sql_create_station_idx = 'CREATE INDEX station_idx ON stations (station_idx);'
     cur.execute(sql_create_station_idx)
     con.commit()
+    del df
 
     # Create indices for fares table
     sql_create_src_idx = 'CREATE INDEX src_idx ON fares (src);'
@@ -72,8 +73,8 @@ def main(api_key):
 
         # Fill table with ids
         cur.executemany(f'INSERT INTO {color_name} VALUES (?)', ids)
-        #sql_create_line_station_idx = f'CREATE INDEX station_idx ON {color_name} (station_idx);'
-        #cur.execute(sql_create_line_station_idx)
+        # sql_create_line_station_idx = f'CREATE INDEX station_idx ON {color_name} (station_idx);'
+        # cur.execute(sql_create_line_station_idx)
         con.commit()
 
     con.close()

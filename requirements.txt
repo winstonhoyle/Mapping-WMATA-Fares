@@ -3,5 +3,6 @@ GeoAlchemy2==0.15.1
 geopandas==0.14.4
 jupyter==1.0.0
 oitnb==0.2.2
+pydantic-extra-types==2.7.0
 tqdm==4.66.4
 SQLAlchemy==2.0.30

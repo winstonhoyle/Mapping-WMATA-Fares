@@ -1,7 +1,7 @@
 from enum import Enum
 
 from sqlalchemy import Column
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped  # , mapped_column
 from geoalchemy2 import Geometry, WKBElement
 
 from .database import Base
@@ -34,7 +34,7 @@ class Line(Base):
     name: Mapped[str]
     color: Mapped[str]
     color_idx: Mapped[int] = Column(index=True)
-    geom = Column(Geometry('GEOMETRY'))
+    geom: Mapped[WKBElement] = Column(Geometry(geometry_type='LINESTRING'))
 
 
 class StationColors(str, Enum):

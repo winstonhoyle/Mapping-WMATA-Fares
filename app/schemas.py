@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from geoalchemy2 import Geometry, WKBElement
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class Fare(BaseModel):
@@ -16,3 +18,11 @@ class Station(BaseModel):
     station_idx: int
     lat: float
     lon: float
+
+
+class Line(BaseModel):
+    fid: int
+    name: str
+    color: str
+    color_idx: int
+    geom: str

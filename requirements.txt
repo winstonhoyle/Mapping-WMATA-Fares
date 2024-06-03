@@ -1,5 +1,7 @@
 fastapi==0.111.0
+GeoAlchemy2==0.15.1
 geopandas==0.14.4
 jupyter==1.0.0
+oitnb==0.2.2
 tqdm==4.66.4
 SQLAlchemy==2.0.30

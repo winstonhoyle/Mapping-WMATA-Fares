@@ -1,7 +1,11 @@
 import json
 from typing import List, Optional, Union
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+
 from geoalchemy2.shape import to_shape
 from geojson import FeatureCollection, Feature, Point, LineString
 from shapely import to_geojson
@@ -10,9 +14,21 @@ from sqlalchemy.orm import Session
 from . import crud, models, schemas
 from .database import SessionLocal, engine
 
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.mount('/static', StaticFiles(directory='static', html=True), name='static')
 
 # Dependency
 def get_db():
@@ -33,13 +49,20 @@ async def read_station(
     db: Session = Depends(get_db),
 ):
 
-    if (code and station_id) or (station_id < 1 or station_id > 102):
-
+    if (code and station_id):
         raise HTTPException(
             status_code=400,
             detail='Please query station by code or ID',
             headers={'X-Error': 'TParameter Error'},
         )
+
+    if station_id:
+        if station_id < 1 or station_id > 102:
+            raise HTTPException(
+                status_code=400,
+                detail='Please query station by code or ID',
+                headers={'X-Error': 'TParameter Error'},
+            )
 
     # Valid station IDs are 1-102
     if station_id and (
@@ -69,11 +92,24 @@ async def read_station(
         return feature_collection
 
 
-@app.get('/stations', response_model=List[schemas.Station], description='Returns all stations')
-async def read_all_stations(db: Session = Depends(get_db)):
+@app.get('/stations', response_model=Union[List[schemas.Station],dict], description='Returns all stations')
+async def read_all_stations(geojson: Optional[bool] = False, db: Session = Depends(get_db)):
     stations = crud.get_all_stations(db)
 
-    return stations
+    if not geojson:
+        return stations
+    else:
+        features = []
+        for station in stations:
+            point = Point(station.geojson['coordinates'])
+            feature = Feature(
+                geometry=point, properties={'name': station.name, 'code': station.code},
+            )
+            features.append(feature)
+
+
+        feature_collection = FeatureCollection(features)
+        return feature_collection
 
 
 @app.get('/lines', response_model=dict, description='Returns Line')
@@ -204,6 +240,8 @@ async def read_fares(
         src_station_feature = Feature(
             geometry=src_station_point,
             properties={
+                'station_id': station_id,
+                'code': src_station.code,
                 'name': fares[0].src_station.name,
                 'peak': 2,
                 'off_peak': 2,
@@ -218,6 +256,8 @@ async def read_fares(
             feature = Feature(
                 geometry=point,
                 properties={
+                    'station_id': fare.dst,
+                    'code': fare.dst_station.code,
                     'name': fare.dst_station.name,
                     'peak': fare.peak,
                     'off_peak': fare.off_peak,

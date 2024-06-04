@@ -12,13 +12,14 @@ class StationBase(BaseModel):
 class Station(StationBase):
     geojson: dict
 
-
 class StationPair(BaseModel):
     src_station: Station
     dst_station: Station
 
 
 class Fare(BaseModel):
+    src: int
+    dst: int
     peak: float
     off_peak: float
     senior_disabled: float

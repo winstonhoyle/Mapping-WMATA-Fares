@@ -5,9 +5,7 @@ This application helps visualize the confusing fare system of Washington Metropo
 
 ## Prerequisites
 
-1. Python 3.x
-2. Flask 3.0.x+
-(Optional) GDAL (osgeo) 
+1. Python 3.10>=
 
 ## Running the application
 
@@ -17,7 +15,7 @@ source .venv/bin/activate
 cd src/
 python -m pip install -r requirements.txt
 cd app/
-python app.py
+fastapi run main.py
 ```
 
 ## Contributing

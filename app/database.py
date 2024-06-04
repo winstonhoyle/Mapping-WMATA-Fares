@@ -7,10 +7,12 @@ from sqlalchemy.orm import sessionmaker
 from geoalchemy2 import load_spatialite_gpkg
 
 
-SQLALCHEMY_DATABASE_URL = 'sqlite:///../data/gpkg/lines.gpkg'
+SQLALCHEMY_DATABASE_URL = "sqlite:///../data/gpkg/lines.gpkg"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={'check_same_thread': False})
-listen(engine, 'connect', load_spatialite_gpkg)
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+listen(engine, "connect", load_spatialite_gpkg)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

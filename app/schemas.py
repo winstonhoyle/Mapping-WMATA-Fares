@@ -6,11 +6,12 @@ from pydantic import BaseModel, ConfigDict
 class StationBase(BaseModel):
     code: str
     name: str
-    station_idx: int
+    station_id: int
 
 
 class Station(StationBase):
     geojson: dict
+
 
 class StationPair(BaseModel):
     src_station: Station

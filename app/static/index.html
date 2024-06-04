@@ -18,7 +18,7 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden
+    overflow: hidden;
   }
 
   #map {
@@ -58,28 +58,39 @@
     margin-right: 8px;
     opacity: 1;
   }
+
+  #selections {
+    position: relative;
+    float: right;
+  }
 </style>
 
 <body>
   <div id="map">
+    <script src="picklines.js"></script>
+    <div class="overlay" id="selections">
+      <select id="Line-selection" onchange="SelectLine()">
+        <option value="all">all</option>
+        <option value="silver">Silver</option>
+        <option value="red">Red</option>
+        <option value="orange">Orange</option>
+        <option value="yellow">Yellow</option>
+        <option value="blue">Blue</option>
+        <option value="green">Green</option>
+      </select>
+      <select id="Fare-selection">
+        <option value="">Fare Type</option>
+        <option value="peak">Peak</option>
+        <option value="off_peak">Offpeak</option>
+        <option value="senior_disabled">Senior Disabled</option>
+      </select>
+    </div>
     <div class="overlay">
       <center>
         <h1>Mapping WMATA Fares</h1>
         <h4>Version: 0.0.3</h4>
         <h3>GitHub: <a href="https://github.com/winstonhoyle/Mapping-WMATA-Fares">Mapping-WMATA-Fares</a></h3>
       </center>
-      <input type="button" onclick="Red()" value="Red" id="redButton">
-      <input type="button" onclick="Orange()" value="Orange" id="orangeButton" />
-      <input type="button" onclick="Silver()" value="Silver" id="silverButton" />
-      <input type="button" onclick="Yellow()" value="Yellow" id="yellowButton" />
-      <input type="button" onclick="Blue()" value="Blue" id="blueButton" />
-      <input type="button" onclick="Green()" value="Green" id="greenButton" />
-      <select id="Fare-selection">
-        <option value="">Fare Type</option>
-        <option value="peak">Peak</option>
-        <option value="offpeak">Offpeak</option>
-        <option value="senior_disabled">Senior Disabled</option>
-      </select>
     </div>
     <script src="map.js"></script>
   </div>

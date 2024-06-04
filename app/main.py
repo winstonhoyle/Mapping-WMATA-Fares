@@ -22,13 +22,14 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.mount('/static', StaticFiles(directory='static', html=True), name='static')
+app.mount("/static", StaticFiles(directory="static", html=True), name="static")
+
 
 # Dependency
 def get_db():
@@ -40,7 +41,9 @@ def get_db():
 
 
 @app.get(
-    '/station', response_model=Union[schemas.Station, dict], description='Returns station'
+    "/station",
+    response_model=Union[schemas.Station, dict],
+    description="Returns station",
 )
 async def read_station(
     code: Optional[str] = None,
@@ -49,19 +52,19 @@ async def read_station(
     db: Session = Depends(get_db),
 ):
 
-    if (code and station_id):
+    if code and station_id:
         raise HTTPException(
             status_code=400,
-            detail='Please query station by code or ID',
-            headers={'X-Error': 'TParameter Error'},
+            detail="Please query station by code or ID",
+            headers={"X-Error": "TParameter Error"},
         )
 
     if station_id:
         if station_id < 1 or station_id > 102:
             raise HTTPException(
                 status_code=400,
-                detail='Please query station by code or ID',
-                headers={'X-Error': 'TParameter Error'},
+                detail="Please query station by code or ID",
+                headers={"X-Error": "TParameter Error"},
             )
 
     # Valid station IDs are 1-102
@@ -70,8 +73,8 @@ async def read_station(
     ):
         raise HTTPException(
             status_code=400,
-            detail='Please enter a valid station id',
-            headers={'X-Error': 'TParameter Error'},
+            detail="Please enter a valid station id",
+            headers={"X-Error": "TParameter Error"},
         )
 
     if station_id:
@@ -82,9 +85,10 @@ async def read_station(
     if not geojson:
         return station
     else:
-        point = Point(station.geojson['coordinates'])
+        point = Point(station.geojson["coordinates"])
         feature = Feature(
-            geometry=point, properties={'name': station.name, 'code': station.code},
+            geometry=point,
+            properties={"name": station.name, "code": station.code},
         )
 
         # Create Feature collection
@@ -92,27 +96,40 @@ async def read_station(
         return feature_collection
 
 
-@app.get('/stations', response_model=Union[List[schemas.Station],dict], description='Returns all stations')
-async def read_all_stations(geojson: Optional[bool] = False, db: Session = Depends(get_db)):
-    stations = crud.get_all_stations(db)
+@app.get(
+    "/stations",
+    response_model=Union[List[schemas.Station], dict],
+    description="Returns all stations",
+)
+async def read_all_stations(
+    line: models.StationColorNames,
+    geojson: Optional[bool] = False,
+    db: Session = Depends(get_db),
+):
+
+    if line == models.StationColorNames.ALL:
+        stations = crud.get_all_stations(db)
+    else:
+        stations = crud.stations_from_line_color(db, color=line)
+        print(len)
 
     if not geojson:
         return stations
     else:
         features = []
         for station in stations:
-            point = Point(station.geojson['coordinates'])
+            point = Point(station.geojson["coordinates"])
             feature = Feature(
-                geometry=point, properties={'name': station.name, 'code': station.code},
+                geometry=point,
+                properties={"name": station.name, "code": station.code},
             )
             features.append(feature)
-
 
         feature_collection = FeatureCollection(features)
         return feature_collection
 
 
-@app.get('/lines', response_model=dict, description='Returns Line')
+@app.get("/lines", response_model=dict, description="Returns Line")
 async def read_all_lines(db: Session = Depends(get_db)):
     lines = crud.get_all_lines(db)
 
@@ -124,9 +141,9 @@ async def read_all_lines(db: Session = Depends(get_db)):
         linestring = to_shape(line.geom)
         geojson_obj = to_geojson(linestring)
         geojson_validated = json.loads(geojson_obj)
-        linestring_obj = LineString(geojson_validated['coordinates'])
+        linestring_obj = LineString(geojson_validated["coordinates"])
         feature = Feature(
-            geometry=linestring_obj, properties={'color': line.color, 'name': line.name}
+            geometry=linestring_obj, properties={"color": line.color, "name": line.name}
         )
         features.append(feature)
 
@@ -135,7 +152,7 @@ async def read_all_lines(db: Session = Depends(get_db)):
     return feature_collection
 
 
-@app.get('/line/{color}', response_model=dict, description='Returns line')
+@app.get("/line/{color}", response_model=dict, description="Returns line")
 async def read_line(color: models.StationColors, db: Session = Depends(get_db)):
     line = crud.get_line(db, color=color)
 
@@ -143,11 +160,11 @@ async def read_line(color: models.StationColors, db: Session = Depends(get_db)):
     linestring = to_shape(line.geom)
     geojson_obj = to_geojson(linestring)
     geojson_validated = json.loads(geojson_obj)
-    linestring_obj = LineString(geojson_validated['coordinates'])
+    linestring_obj = LineString(geojson_validated["coordinates"])
 
     # Create geojson line string obj
     feature = Feature(
-        geometry=linestring_obj, properties={'color': line.color, 'name': line.name}
+        geometry=linestring_obj, properties={"color": line.color, "name": line.name}
     )
 
     # Create Feature collection
@@ -156,9 +173,9 @@ async def read_line(color: models.StationColors, db: Session = Depends(get_db)):
 
 
 @app.get(
-    '/fare',
+    "/fare",
     response_model=Union[schemas.StationFare, dict],
-    description='Gets fare from one station to another',
+    description="Gets fare from one station to another",
 )
 async def read_fare(
     src_station_id: int,
@@ -172,8 +189,8 @@ async def read_fare(
     ):
         raise HTTPException(
             status_code=400,
-            detail='Please enter a valid station id',
-            headers={'X-Error': 'TParameter Error'},
+            detail="Please enter a valid station id",
+            headers={"X-Error": "TParameter Error"},
         )
 
     fare = crud.get_fare_station_to_station(
@@ -186,38 +203,40 @@ async def read_fare(
     else:
 
         # Build src feature object
-        src_station_point = Point(fare.src_station.geojson['coordinates'])
+        src_station_point = Point(fare.src_station.geojson["coordinates"])
         src_station_feature = Feature(
             geometry=src_station_point,
             properties={
-                'name': fare.src_station.name,
-                'peak': 2,
-                'off_peak': 2,
-                'senior_disabled': 1,
+                "name": fare.src_station.name,
+                "peak": 2,
+                "off_peak": 2,
+                "senior_disabled": 1,
             },
         )
 
         # Build dst feature object
-        dst_station_point = Point(fare.dst_station.geojson['coordinates'])
+        dst_station_point = Point(fare.dst_station.geojson["coordinates"])
         dst_station_feature = Feature(
             geometry=dst_station_point,
             properties={
-                'name': fare.dst_station.name,
-                'peak': fare.peak,
-                'off_peak': fare.off_peak,
-                'senior_disabled': fare.senior_disabled,
+                "name": fare.dst_station.name,
+                "peak": fare.peak,
+                "off_peak": fare.off_peak,
+                "senior_disabled": fare.senior_disabled,
             },
         )
 
         # Create Feature collection
-        feature_collection = FeatureCollection([src_station_feature, dst_station_feature])
+        feature_collection = FeatureCollection(
+            [src_station_feature, dst_station_feature]
+        )
         return feature_collection
 
 
 @app.get(
-    '/fare/{station_id}',
+    "/fare/{station_id}",
     response_model=Union[schemas.FareList, dict],
-    description='Returns all fares for this station',
+    description="Returns all fares for this station",
 )
 async def read_fares(
     station_id: int, geojson: Optional[bool] = False, db: Session = Depends(get_db)
@@ -229,39 +248,39 @@ async def read_fares(
 
     # Standard API return
     if not geojson:
-        return {'src_station': src_station, 'fares': fares}
+        return {"src_station": src_station, "fares": fares}
     else:
 
         # Build features and feature collection
         features = []
 
         # Build src feature object
-        src_station_point = Point(fares[0].src_station.geojson['coordinates'])
+        src_station_point = Point(fares[0].src_station.geojson["coordinates"])
         src_station_feature = Feature(
             geometry=src_station_point,
             properties={
-                'station_id': station_id,
-                'code': src_station.code,
-                'name': fares[0].src_station.name,
-                'peak': 2,
-                'off_peak': 2,
-                'senior_disabled': 1,
+                "station_id": station_id,
+                "code": src_station.code,
+                "name": fares[0].src_station.name,
+                "peak": 2,
+                "off_peak": 2,
+                "senior_disabled": 1,
             },
         )
         features.append(src_station_feature)
 
         # Loop through all the destination stations and build geojson objects
         for fare in fares:
-            point = Point(fare.dst_station.geojson['coordinates'])
+            point = Point(fare.dst_station.geojson["coordinates"])
             feature = Feature(
                 geometry=point,
                 properties={
-                    'station_id': fare.dst,
-                    'code': fare.dst_station.code,
-                    'name': fare.dst_station.name,
-                    'peak': fare.peak,
-                    'off_peak': fare.off_peak,
-                    'senior_disabled': fare.senior_disabled,
+                    "station_id": fare.dst,
+                    "code": fare.dst_station.code,
+                    "name": fare.dst_station.name,
+                    "peak": fare.peak,
+                    "off_peak": fare.off_peak,
+                    "senior_disabled": fare.senior_disabled,
                 },
             )
             features.append(feature)

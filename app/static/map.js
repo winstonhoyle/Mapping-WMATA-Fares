@@ -1,32 +1,17 @@
 //add basemap
-var map = L.map('map', { scrollWheelZoom: true }).setView([38.898303, -77.028099], 11);
+var map = L.map('map', {
+  minZoom: 11,
+  maxZoom: 15,
+  zoomControl: false
+}).setView([38.898303, -77.028099], 11);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 11,
+  maxZoom: 15,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-lines_geojson_url = 'http://127.0.0.1:8000/lines';
-const lines_geojson_url_response = fetch(lines_geojson_url).then(response => response.json()).then(response => {
-  lines = L.geoJson(response).addTo(map);
-})
-
-stations_geojson_url = 'http://127.0.0.1:8000/stations?geojson=true';
-const stations_geojson_url_response = fetch(stations_geojson_url).then(response => response.json()).then(response => {
-  stations = L.geoJson(response, {
-    pointToLayer: function (feature, latlng) {
-      return L.circleMarker(latlng, {
-        radius: 5,
-        color: "#000000",
-        fillColor: "#ffffff",
-        fillOpacity: 1.0
-      }).bindTooltip(feature.properties.name);
-    },
-    onEachFeature: onEachFeature,
-    pane: "stations"
-  }).addTo(map);
-  map.fitBounds(stations.getBounds());
-})
-
+L.control.zoom({
+  position: 'bottomleft'
+}).addTo(map);
 
 //legend
 var legend = L.control({ position: 'bottomright' });
@@ -39,11 +24,11 @@ legend.onAdd = function (map) {
       fares = [6.0, 5.0, 4.0, 3.5, 3.0, 2.5, 2.0];
       colors = ['#d73027', '#fc8d59', '#fee08b', '#ffffbf', '#d9ef8b', '#91cf60', '#1a9850'];
       break;
-    case "offpeak":
+    case "off_peak":
       fares = [3.85, 3.5, 3.0, 2.5, 2.0];
       colors = ['#d7191c', '#fdae61', '#ffffbf', '#a6d96a', '#1a9641'];
       break;
-    case "reduced_peak":
+    case "senior_disabled":
       fares = [3.0, 2.5, 2.0, 1.5, 1.0];
       colors = ['#d7191c', '#fdae61', '#ffffbf', '#a6d96a', '#1a9641'];
       break;
@@ -64,6 +49,7 @@ legend.onAdd = function (map) {
 //Get fare information for a station
 function UpdateStations(station_code) {
 
+  // Remove colored stations if it exists
   if (typeof updatedStations !== 'undefined') {
     map.removeLayer(updatedStations)
   }
@@ -77,7 +63,7 @@ function UpdateStations(station_code) {
     async: false,
     dataType: 'json',
     success: function (data) {
-      stationId = data.station_idx;
+      stationId = data.station_id;
     }
   });
 
@@ -109,12 +95,20 @@ function UpdateStations(station_code) {
 
 //highlight station function
 function highlightFeature(e) {
+
+  fareType = document.getElementById("Fare-selection").value;
+
+  // If drop down empty
+  if (fareType == '') {
+    return
+  }
+
+
   var target = e.target;
 
   UpdateStations(target.feature.properties.code);
   updatedStations.eachLayer(function (layer) {
-    fareType = document.getElementById("Fare-selection").value
-    fare = layer.feature.properties[fareType]
+    fare = layer.feature.properties[fareType];
     layer.setStyle({
       radius: 5,
       color: "#000000",
@@ -124,6 +118,7 @@ function highlightFeature(e) {
 
   });
 
+  // Add legend
   map.addControl(legend);
 }
 
@@ -145,14 +140,14 @@ function getColor(d) {
                 d >= 2.5 ? '#91cf60' :
                   d >= 2.0 ? '#1a9850' :
                     '#000000';
-    case "offpeak":
+    case "off_peak":
       return d == 3.85 ? '#d7191c' :
         d >= 3.5 ? '#fdae61' :
           d >= 3.0 ? '#ffffbf' :
             d >= 2.5 ? '#a6d96a' :
               d >= 2 ? '#1a9641' :
                 '#000000';
-    case "reduced_peak":
+    case "senior_disabled":
       return d == 3.00 ? '#d7191c' :
         d >= 2.5 ? '#fdae61' :
           d >= 2.0 ? '#ffffbf' :
@@ -164,7 +159,52 @@ function getColor(d) {
   }
 }
 
+// For selection changes
+var fareSelection = document.getElementById('Fare-selection');
+fareSelection.onchange = (event) => {
+  var inputText = event.target.value;
+  if (inputText == '') {
+    // Remove colored stations if it exists
+    if (typeof updatedStations !== 'undefined') {
+      map.removeLayer(updatedStations)
+    }
+    stations.addTo(map);
+  }
+}
+
 map.createPane("metro");
 map.createPane("stations");
 map.getPane("stations").style.zIndex = 999;
 map.getPane("metro").style.zIndex = 200;
+
+// add lines geojson
+lines_geojson_url = 'http://127.0.0.1:8000/lines';
+const lines_geojson_url_response = fetch(lines_geojson_url).then(response => response.json()).then(response => {
+  lines = L.geoJson(response, {
+    style: function (features) {
+      return {
+        weight: 6,
+        color: features.properties.name
+      }
+    },
+    pane: "metro"
+  }).addTo(map);
+})
+
+// add stations, they have a onEachFeature function and a circle marker
+stations_geojson_url = 'http://127.0.0.1:8000/stations?line=all&geojson=true';
+const stations_geojson_url_response = fetch(stations_geojson_url).then(response => response.json()).then(response => {
+  stations = L.geoJson(response, {
+    pointToLayer: function (feature, latlng) {
+      return L.circleMarker(latlng, {
+        radius: 5,
+        color: "#000000",
+        fillColor: "#ffffff",
+        fillOpacity: 1.0
+      }).bindTooltip(feature.properties.name);
+    },
+    onEachFeature: onEachFeature,
+    pane: "stations"
+  }).addTo(map);
+  map.fitBounds(stations.getBounds());
+})

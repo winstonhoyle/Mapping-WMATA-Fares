@@ -7,7 +7,7 @@
             "properties": {
                 "NAME": "red",
                 "COLOR": "RD",
-                "COLOR_IDX": 1
+                "COLOR_ID": 1
             },
             "geometry": {
                 "type": "LineString",
@@ -7976,7 +7976,7 @@
             "properties": {
                 "NAME": "yellow",
                 "COLOR": "YL",
-                "COLOR_IDX": 2
+                "COLOR_ID": 2
             },
             "geometry": {
                 "type": "LineString",
@@ -12341,7 +12341,7 @@
             "properties": {
                 "NAME": "green",
                 "COLOR": "GR",
-                "COLOR_IDX": 3
+                "COLOR_ID": 3
             },
             "geometry": {
                 "type": "LineString",
@@ -19598,7 +19598,7 @@
             "properties": {
                 "NAME": "orange",
                 "COLOR": "OR",
-                "COLOR_IDX": 4
+                "COLOR_ID": 4
             },
             "geometry": {
                 "type": "LineString",
@@ -43527,7 +43527,7 @@
             "properties": {
                 "NAME": "silver",
                 "COLOR": "SV",
-                "COLOR_IDX": 5
+                "COLOR_ID": 5
             },
             "geometry": {
                 "type": "LineString",
@@ -58512,7 +58512,7 @@
             "properties": {
                 "NAME": "blue",
                 "COLOR": "BL",
-                "COLOR_IDX": 6
+                "COLOR_ID": 6
             },
             "geometry": {
                 "type": "LineString",

@@ -15,7 +15,7 @@ source .venv/bin/activate
 cd src/
 python -m pip install -r requirements.txt
 cd app/
-python app.py
+fastapi run main.py
 ```
 
 ## Contributing

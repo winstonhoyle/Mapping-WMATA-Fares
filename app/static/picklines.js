@@ -83,14 +83,6 @@ function onEachFeatureStationsOnLine(feature, layer) {
 
 function ChangeFare() {
 
-  if (document.getElementById("Fare-selection").value === '') {
-    lines.addTo(map);
-    stations.addTo(map);
-    map.fitBounds(lines.getBounds());
-    document.getElementById("Line-selection").selectedIndex = 0;
-    return
-  }
-
   if (typeof selectedLine !== 'undefined') {
     map.removeLayer(selectedLine);
   }
@@ -103,6 +95,14 @@ function ChangeFare() {
   if (typeof updatedStations !== 'undefined') {
     map.removeLayer(updatedStations);
     stations.addTo(map);
+  }
+
+  if (document.getElementById("Fare-selection").value === '') {
+    lines.addTo(map);
+    stations.addTo(map);
+    map.fitBounds(lines.getBounds());
+    document.getElementById("Line-selection").selectedIndex = 0;
+    return
   }
 
   color = document.getElementById("Line-selection").value

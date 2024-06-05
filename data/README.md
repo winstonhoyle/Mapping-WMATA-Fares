@@ -9,6 +9,7 @@ Within [wmata.py](https://github.com/winstonhoyle/Mapping-WMATA-Fares/tree/main/
 ## Notes
 * Are folders that include data. GeoJSON data is from [DC GIS Portal](https://opendata.dc.gov/datasets/metro-lines-regional/about).
 * To create this data you need a API Token from [WMATA API](https://developer.wmata.com/)
+* With this token and following the build `.env` steps in [Running the application](https://github.com/winstonhoyle/Mapping-WMATA-Fares/tree/main/README.md#running-the-application), you can use [build_db.py](https://github.com/winstonhoyle/Mapping-WMATA-Fares/tree/main/data/build_lines_meta_table.py) which does all of the below
 * Script [make_station_files.py](https://github.com/winstonhoyle/Mapping-WMATA-Fares/tree/main/data/make_station_files.py) will build `csv/stations.csv` and `csv/fares.csv`
 * Script [convert_geojson_to_gpkg.py](https://github.com/winstonhoyle/Mapping-WMATA-Fares/tree/main/data/convert_geojson_to_gpkg.py) will convert the `geojson/*.geojson` files into `gpkg/*.gpkg`
 * Script [build_lines_meta_table.py](https://github.com/winstonhoyle/Mapping-WMATA-Fares/tree/main/data/build_lines_meta_table.py) will build the `lines` and `stations` tables within `lines.gpkg` which houses names and lat/lon for stations. The `fares` table will also be created.

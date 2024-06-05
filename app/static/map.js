@@ -4,7 +4,7 @@ var map = L.map('map', {
   maxZoom: 15,
   zoomControl: false
 }).setView([38.898303, -77.028099], 11);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
   maxZoom: 15,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
@@ -180,6 +180,23 @@ function getColor(d) {
   }
 }
 
+function getLineColor(color) {
+  switch (color) {
+    case "red":
+      return '#BF0D3E'
+    case "orange":
+      return '#ED8B00'
+    case "blue":
+      return '#009CDE'
+    case "green":
+      return '#00B140'
+    case "yellow":
+      return '#FFD100'
+    case "silver":
+      return '#919D9D'
+  }
+}
+
 map.createPane("metro");
 map.createPane("stations");
 map.getPane("stations").style.zIndex = 999;
@@ -192,7 +209,7 @@ const lines_geojson_url_response = fetch(lines_geojson_url).then(response => res
     style: function (features) {
       return {
         weight: 6,
-        color: features.properties.name
+        color: getLineColor(features.properties.name)
       }
     },
     pane: "metro"

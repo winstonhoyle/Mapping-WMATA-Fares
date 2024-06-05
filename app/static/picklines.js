@@ -169,7 +169,7 @@ function SelectLine() {
       style: function (features) {
         return {
           weight: 6,
-          color: features.properties.name
+          color: getLineColor(features.properties.name)
         }
       },
       pane: "metro"

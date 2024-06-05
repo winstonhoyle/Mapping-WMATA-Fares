@@ -8,17 +8,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.event import listen
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-env = dotenv_values(".env")
-#if env:
-#    #SQLALCHEMY_DATABASE_URL = os.environ['SQLALCHEMY_DATABASE_URL']
-#else:
+env = dotenv_values("local.env")
+if env:
+    SQLALCHEMY_DATABASE_URL = env["SQLALCHEMY_DATABASE_URL"]
+else:
     
-db_dir = "data/gpkg/lines.gpkg"
-#    print(f'os.path.abspath(db_dir): {str(os.path.abspath(db_dir))}')
-SQLALCHEMY_DATABASE_URL = "sqlite:///" + os.path.abspath(db_dir)
-
-
-    #SQLALCHEMY_DATABASE_URL = env["SQLALCHEMY_DATABASE_URL"]
+    SQLALCHEMY_DATABASE_URL = os.environ['SQLALCHEMY_DATABASE_URL']
 
 # Could be any database
 engine = create_engine(

@@ -46,8 +46,18 @@ legend.onAdd = function (map) {
   return div;
 };
 
+
+async function getStationId(stationCode) {
+  console.log(1.5)
+  getStationUrl = '/station?code=' + stationCode;
+  let getStationResponse = await fetch(getStationUrl);
+  let data = await getStationResponse.json();
+  console.log(2)
+  return data;
+}
+
 //Get fare information for a station
-function UpdateStations(station_code) {
+async function UpdateStations(stationCode) {
 
   // Remove colored stations if it exists
   if (typeof updatedStations !== 'undefined') {
@@ -55,46 +65,49 @@ function UpdateStations(station_code) {
   }
 
 
-  getStationUrl = 'http://127.0.0.1:8000/station?code=' + station_code
-
-  // Get station code
-  $.ajax({
-    url: getStationUrl,
-    async: false,
-    dataType: 'json',
-    success: function (data) {
-      stationId = data.station_id;
-    }
+  // add lines geojson
+  linesGeojsonUrl = '/lines';
+  const linesGeojsonUrlResponse = fetch(linesGeojsonUrl).then(response => response.json()).then(response => {
+    lines = L.geoJson(response, {
+      style: function (features) {
+        return {
+          weight: 6,
+          color: features.properties.name
+        }
+      },
+      pane: "metro"
+    }).addTo(map);
   });
 
+
+  let stationId
+  await getStationId(stationCode).then(data => {
+    stationId = data.station_id
+  });
+
+
   // Get all fares for that station
-  getFaresUrl = 'http://127.0.0.1:8000/fare/' + stationId + '?geojson=true'
-  $.ajax({
-    url: getFaresUrl,
-    async: false,
-    dataType: 'json',
-    success: function (data) {
-      stationGeoJSONdata = data
-      updatedStations = L.geoJson(data, {
-        pointToLayer: function (feature, latlng) {
-          return L.circleMarker(latlng, {
-            radius: 5,
-            color: "#000000",
-            fillColor: "#ffffff",
-            fillOpacity: 1.0
-          }).bindTooltip(feature.properties.name);
-        },
-        onEachFeature: onEachFeature,
-        pane: "stations"
-      }).addTo(map);
-      map.removeLayer(stations)
-    }
+  getFaresUrl = '/fare/' + stationId + '?geojson=true';
+  const stationsGeojsonUrlResponse = await fetch(getFaresUrl).then(response => response.json()).then(response => {
+    updatedStations = L.geoJson(response, {
+      pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, {
+          radius: 5,
+          color: "#000000",
+          fillColor: "#ffffff",
+          fillOpacity: 1.0
+        }).bindTooltip(feature.properties.name);
+      },
+      onEachFeature: onEachFeature,
+      pane: "stations"
+    }).addTo(map);
+    map.removeLayer(stations);
   });
 
 }
 
 //highlight station function
-function highlightFeature(e) {
+async function highlightFeature(e) {
 
   fareType = document.getElementById("Fare-selection").value;
 
@@ -106,7 +119,7 @@ function highlightFeature(e) {
 
   var target = e.target;
 
-  UpdateStations(target.feature.properties.code);
+  await UpdateStations(target.feature.properties.code);
   updatedStations.eachLayer(function (layer) {
     fare = layer.feature.properties[fareType];
     layer.setStyle({
@@ -165,7 +178,7 @@ map.getPane("stations").style.zIndex = 999;
 map.getPane("metro").style.zIndex = 200;
 
 // add lines geojson
-lines_geojson_url = 'http://127.0.0.1:8000/lines';
+lines_geojson_url = '/lines';
 const lines_geojson_url_response = fetch(lines_geojson_url).then(response => response.json()).then(response => {
   lines = L.geoJson(response, {
     style: function (features) {
@@ -179,7 +192,7 @@ const lines_geojson_url_response = fetch(lines_geojson_url).then(response => res
 });
 
 // add stations, they have a onEachFeature function and a circle marker
-stations_geojson_url = 'http://127.0.0.1:8000/stations?line=all&geojson=true';
+stations_geojson_url = '/stations?line=all&geojson=true';
 const stations_geojson_url_response = fetch(stations_geojson_url).then(response => response.json()).then(response => {
   stations = L.geoJson(response, {
     pointToLayer: function (feature, latlng) {

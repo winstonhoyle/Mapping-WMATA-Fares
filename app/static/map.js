@@ -28,7 +28,7 @@ var map = L.map('map', {
     center: [38.898303, -77.028099],
     minZoom: 11,
     maxZoom: 15,
-    layers: [OpenStreetMap_Mapnik],
+    layers: [OSM],
     zoomControl: false,
 });
 

@@ -1,6 +1,7 @@
 import csv
 import json
 
+from dotenv import dotenv_values
 from tqdm import tqdm
 
 from wmata import WMATA
@@ -100,6 +101,9 @@ def main(api_key: str):
 
 
 if __name__ == "__main__":
+
+    env = dotenv_values("../.env")
+
     # Insert api_key
-    api_key = ""
+    api_key = env["WMATA_API_KEY"]
     main(api_key=api_key)

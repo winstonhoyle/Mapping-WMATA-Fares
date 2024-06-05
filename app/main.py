@@ -207,6 +207,7 @@ async def read_fare(
         src_station_feature = Feature(
             geometry=src_station_point,
             properties={
+                "station_id": fare.src_station.station_id,
                 "name": fare.src_station.name,
                 "peak": 2,
                 "off_peak": 2,
@@ -219,6 +220,7 @@ async def read_fare(
         dst_station_feature = Feature(
             geometry=dst_station_point,
             properties={
+                "station_id": fare.dst_station.station_id,
                 "name": fare.dst_station.name,
                 "peak": fare.peak,
                 "off_peak": fare.off_peak,
@@ -239,12 +241,33 @@ async def read_fare(
     description="Returns all fares for this station",
 )
 async def read_fares(
-    station_id: int, geojson: Optional[bool] = False, db: Session = Depends(get_db)
+    station_id: int,
+    geojson: Optional[bool] = False,
+    color: Optional[models.StationColorNames] = None,
+    db: Session = Depends(get_db),
 ):
 
-    # Get fares
-    fares = crud.get_fares_from_station(db, src_station_id=station_id)
-    src_station = fares[0].src_station
+    if color:
+
+        # Get fares only on the line
+        check = crud.check_station_on_line(db, station_id=station_id, color=color)
+        if not check:
+            raise HTTPException(
+                status_code=400,
+                detail="Station is not on the line",
+                headers={"X-Error": "TParameter Error"},
+            )
+
+        fares = crud.get_station_fares_by_line(
+            db, src_station_id=station_id, color=color
+        )
+        src_station = fares[0].src_station
+
+    else:
+
+        # Get all fares
+        fares = crud.get_fares_from_station(db, src_station_id=station_id)
+        src_station = fares[0].src_station
 
     # Standard API return
     if not geojson:
@@ -255,13 +278,13 @@ async def read_fares(
         features = []
 
         # Build src feature object
-        src_station_point = Point(fares[0].src_station.geojson["coordinates"])
+        src_station_point = Point(src_station.geojson["coordinates"])
         src_station_feature = Feature(
             geometry=src_station_point,
             properties={
                 "station_id": station_id,
                 "code": src_station.code,
-                "name": fares[0].src_station.name,
+                "name": src_station.name,
                 "peak": 2,
                 "off_peak": 2,
                 "senior_disabled": 1,

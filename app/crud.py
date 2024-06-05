@@ -6,6 +6,25 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
+def _color_to_model(color: str):
+
+    match color:
+        case "red":
+            model = models.Red
+        case "yellow":
+            model = models.Yellow
+        case "green":
+            model = models.Green
+        case "silver":
+            model = models.Silver
+        case "orange":
+            model = models.Orange
+        case "blue":
+            model = models.Blue
+
+    return model
+
+
 def get_all_stations(db: Session) -> list:
     stations = db.query(models.Station).all()
     return stations
@@ -51,20 +70,26 @@ def get_fares_from_station(db: Session, src_station_id: int) -> list:
 
 
 def stations_from_line_color(db: Session, color: str):
-    match color:
-        case "red":
-            model = models.Red
-        case "yellow":
-            model = models.Yellow
-        case "green":
-            model = models.Green
-        case "silver":
-            model = models.Silver
-        case "orange":
-            model = models.Orange
-        case "blue":
-            model = models.Blue
+    model = _color_to_model(color)
     line_stations = db.query(model).all()
     stations = [station.station for station in line_stations]
 
     return stations
+
+
+def check_station_on_line(db: Session, station_id: int, color: str) -> bool:
+    model = _color_to_model(color)
+    return db.query(model).filter(model.station_id == station_id).all()
+
+
+def get_station_fares_by_line(db: Session, src_station_id: int, color: str) -> list:
+    model = _color_to_model(color)
+    fares = (
+        db.query(models.Fare)
+        .filter(
+            and_(model.station_id == models.Fare.dst, models.Fare.src == src_station_id)
+        )
+        .all()
+    )
+
+    return fares

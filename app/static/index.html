@@ -67,10 +67,9 @@
 
 <body>
   <div id="map">
-    <script src="picklines.js"></script>
     <div class="overlay" id="selections">
       <select id="Line-selection" onchange="SelectLine()">
-        <option value="all">all</option>
+        <option value="all">All</option>
         <option value="silver">Silver</option>
         <option value="red">Red</option>
         <option value="orange">Orange</option>
@@ -78,12 +77,14 @@
         <option value="blue">Blue</option>
         <option value="green">Green</option>
       </select>
-      <select id="Fare-selection">
+      <select id="Fare-selection" onchange="ChangeFare()">
         <option value="">Fare Type</option>
         <option value="peak">Peak</option>
-        <option value="off_peak">Offpeak</option>
+        <option value="off_peak">Off-Peak</option>
         <option value="senior_disabled">Senior Disabled</option>
       </select>
+      <script src="map.js"></script>
+      <script src="picklines.js"></script>
     </div>
     <div class="overlay">
       <center>
@@ -92,7 +93,6 @@
         <h3>GitHub: <a href="https://github.com/winstonhoyle/Mapping-WMATA-Fares">Mapping-WMATA-Fares</a></h3>
       </center>
     </div>
-    <script src="map.js"></script>
   </div>
 </body>
 

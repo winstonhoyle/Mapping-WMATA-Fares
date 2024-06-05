@@ -8,5 +8,7 @@ __pycache__/
 
 *.gpkg
 *.csv
+*.local
 
 webapp/
+data/geojson/stations.geojson

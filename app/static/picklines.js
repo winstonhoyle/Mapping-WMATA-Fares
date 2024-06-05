@@ -53,13 +53,21 @@ async function highlightFeatureStationLines(e) {
   updatedStationsOnLinec = await UpdateStationsOnLine(e.target.feature.code, stationCode);
   updatedStationsOnLine.eachLayer(function (layer) {
     fare = layer.feature.properties[fareType];
-    layer.setStyle({
-      radius: 5,
-      color: "#000000",
-      fillColor: getColor(fare),
-      weight: 1
-    }).bindTooltip("<center>" + layer.feature.properties.name + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
-
+    if (layer.feature.properties.code === stationCode) {
+      layer.setStyle({
+        radius: 5,
+        color: "#000000",
+        fillColor: "#000000",
+        weight: 1
+      }).bindTooltip("<center>Your Station<br>" + layer.feature.properties.name + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
+    } else {
+      layer.setStyle({
+        radius: 5,
+        color: "#000000",
+        fillColor: getColor(fare),
+        weight: 1
+      }).bindTooltip("<center>" + layer.feature.properties.name + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
+    }
   });
 
   // Add legend
@@ -92,9 +100,17 @@ function ChangeFare() {
   if (typeof updatedStationsOnLine !== 'undefined') {
     map.removeLayer(updatedStationsOnLine);
   }
-  SelectLine()
-}
+  if (typeof updatedStations !== 'undefined') {
+    map.removeLayer(updatedStations);
+    stations.addTo(map);
+  }
 
+  color = document.getElementById("Line-selection").value
+
+  if (color !== 'all') {
+    SelectLine()
+  }
+}
 
 function SelectLine() {
 
@@ -102,7 +118,6 @@ function SelectLine() {
 
   if (typeof selectedLine !== 'undefined') {
     map.removeLayer(selectedLine);
-
   }
   if (typeof selectedStations !== 'undefined') {
     map.removeLayer(selectedStations);
@@ -110,13 +125,15 @@ function SelectLine() {
   if (typeof updatedStationsOnLine !== 'undefined') {
     map.removeLayer(updatedStationsOnLine);
   }
+  if (typeof updatedStations !== 'undefined') {
+    map.removeLayer(updatedStations);
+  }
 
   if (color === 'all') {
-
     lines.addTo(map);
     stations.addTo(map);
     map.fitBounds(lines.getBounds());
-    //document.getElementById("Fare-selection").selectedIndex = 0;
+    document.getElementById("Fare-selection").selectedIndex = 0;
     return
   }
 
@@ -157,7 +174,7 @@ function SelectLine() {
       },
       pane: "metro"
     }).addTo(map);
-  })
+  });
 
   // add stations, they have a onEachFeature function and a circle marker
   selectedStationsUrl = '/stations?line=' + color + '&geojson=true';
@@ -175,6 +192,6 @@ function SelectLine() {
       pane: "stations"
     }).addTo(map);
     map.fitBounds(selectedStations.getBounds());
-  })
+  });
 
 }

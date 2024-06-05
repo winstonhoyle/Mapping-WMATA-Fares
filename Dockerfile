@@ -13,6 +13,6 @@ RUN python3 -m pip install -r requirements.txt
 COPY app/ app/
 COPY data/gpkg/lines.gpkg lines.gpkg
 
-ENV SQLALCHEMY_DATABASE_URL=/usr/src/app/lines.gpkg
+ENV SQLALCHEMY_DATABASE_URL=sqlite:////usr/src/app/lines.gpkg
 
 CMD [ "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000" ]

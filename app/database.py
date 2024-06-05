@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.event import listen
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-env = dotenv_values("local.env")
+env = dotenv_values(".env")
 if env:
     SQLALCHEMY_DATABASE_URL = env["SQLALCHEMY_DATABASE_URL"]
 else:

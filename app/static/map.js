@@ -13,6 +13,15 @@ L.control.zoom({
   position: 'bottomleft'
 }).addTo(map);
 
+// Save station info
+var target;
+
+// Lines for later
+var selectedLine;
+var selectedStations;
+var updatedStations;
+var updatedStationsOnLine;
+
 //legend
 var legend = L.control({ position: 'bottomright' });
 legend.onAdd = function (map) {
@@ -48,11 +57,9 @@ legend.onAdd = function (map) {
 
 
 async function getStationId(stationCode) {
-  console.log(1.5)
   getStationUrl = '/station?code=' + stationCode;
   let getStationResponse = await fetch(getStationUrl);
   let data = await getStationResponse.json();
-  console.log(2)
   return data;
 }
 
@@ -63,22 +70,6 @@ async function UpdateStations(stationCode) {
   if (typeof updatedStations !== 'undefined') {
     map.removeLayer(updatedStations)
   }
-
-
-  // add lines geojson
-  linesGeojsonUrl = '/lines';
-  const linesGeojsonUrlResponse = fetch(linesGeojsonUrl).then(response => response.json()).then(response => {
-    lines = L.geoJson(response, {
-      style: function (features) {
-        return {
-          weight: 6,
-          color: features.properties.name
-        }
-      },
-      pane: "metro"
-    }).addTo(map);
-  });
-
 
   let stationId
   await getStationId(stationCode).then(data => {
@@ -109,6 +100,11 @@ async function UpdateStations(stationCode) {
 //highlight station function
 async function highlightFeature(e) {
 
+  // Get target station aka clicked station
+  target = e.target;
+  let stationCode = target.feature.properties.code
+
+  // Get fare value so we can query
   fareType = document.getElementById("Fare-selection").value;
 
   // If drop down empty
@@ -116,18 +112,30 @@ async function highlightFeature(e) {
     return
   }
 
+  // Remove old stations layer
+  map.removeLayer(stations)
 
-  var target = e.target;
-
-  await UpdateStations(target.feature.properties.code);
+  // Create new station
+  await UpdateStations(stationCode);
   updatedStations.eachLayer(function (layer) {
+
     fare = layer.feature.properties[fareType];
-    layer.setStyle({
-      radius: 5,
-      color: "#000000",
-      fillColor: getColor(fare),
-      weight: 1
-    }).bindTooltip("<center>" + layer.feature.properties.name + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
+
+    if (layer.feature.properties.code === stationCode) {
+      layer.setStyle({
+        radius: 5,
+        color: "#000000",
+        fillColor: "#000000",
+        weight: 1
+      }).bindTooltip("<center>Your Station<br>" + layer.feature.properties.name + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
+    } else {
+      layer.setStyle({
+        radius: 5,
+        color: "#000000",
+        fillColor: getColor(fare),
+        weight: 1
+      }).bindTooltip("<center>" + layer.feature.properties.name + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
+    }
 
   });
 

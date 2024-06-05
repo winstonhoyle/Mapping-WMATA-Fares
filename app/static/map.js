@@ -159,21 +159,6 @@ function getColor(d) {
   }
 }
 
-/*
-// For selection changes
-var fareSelection = document.getElementById('Fare-selection');
-fareSelection.onchange = (event) => {
-  var inputText = event.target.value;
-  if (inputText == '') {
-    // Remove colored stations if it exists
-    if (typeof updatedStations !== 'undefined') {
-      map.removeLayer(updatedStations)
-    }
-    stations.addTo(map);
-  }
-}
-*/
-
 map.createPane("metro");
 map.createPane("stations");
 map.getPane("stations").style.zIndex = 999;

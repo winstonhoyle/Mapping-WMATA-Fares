@@ -7,7 +7,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.event import listen
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-env = dotenv_values("/mnt/c/Users/User/Documents/GitHub/Mapping-WMATA-Fares/local.env")
+env = dotenv_values(".env")
+print(env)
 
 SQLALCHEMY_DATABASE_URL = env["SQLALCHEMY_DATABASE_URL"]
 

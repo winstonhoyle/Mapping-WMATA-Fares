@@ -111,7 +111,6 @@ async def read_all_stations(
         stations = crud.get_all_stations(db)
     else:
         stations = crud.stations_from_line_color(db, color=line)
-        print(len)
 
     if not geojson:
         return stations

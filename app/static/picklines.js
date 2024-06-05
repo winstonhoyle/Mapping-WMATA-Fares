@@ -55,14 +55,14 @@ async function highlightFeatureStationLines(e) {
     fare = layer.feature.properties[fareType];
     if (layer.feature.properties.code === stationCode) {
       layer.setStyle({
-        radius: 5,
+        radius: 7,
         color: "#000000",
         fillColor: "#000000",
         weight: 1
       }).bindTooltip("<center>Your Station<br>" + layer.feature.properties.name + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
     } else {
       layer.setStyle({
-        radius: 5,
+        radius: 7,
         color: "#000000",
         fillColor: getColor(fare),
         weight: 1
@@ -168,7 +168,7 @@ function SelectLine() {
     selectedLine = L.geoJson(response, {
       style: function (features) {
         return {
-          weight: 6,
+          weight: 8,
           color: getLineColor(features.properties.name)
         }
       },
@@ -182,7 +182,7 @@ function SelectLine() {
     selectedStations = L.geoJson(response, {
       pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, {
-          radius: 5,
+          radius: 7,
           color: "#000000",
           fillColor: "#ffffff",
           fillOpacity: 1.0

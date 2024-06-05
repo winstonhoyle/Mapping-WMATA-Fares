@@ -1,13 +1,39 @@
-//add basemap
-var map = L.map('map', {
+// Set basemap layers
+var OpenStreetMap_Mapnik = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	minZoom: 11,
+	maxZoom: 15,
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+
+var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
   minZoom: 11,
-  maxZoom: 15,
-  zoomControl: false
-}).setView([38.898303, -77.028099], 11);
-L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-  maxZoom: 15,
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+	maxZoom: 15,
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+
+var Stadia_StamenTonerLite = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.{ext}', {
+	minZoom: 11,
+	maxZoom: 15,
+	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	ext: 'png'
+});
+
+baseMaps = {
+  "OSM": OpenStreetMap_Mapnik,
+  "Esri World Imagery": Esri_WorldImagery,
+  "Stadia Alidade Smooth": Stadia_StamenTonerLite
+}
+
+var map = L.map('map', {
+    center: [38.898303, -77.028099],
+    minZoom: 11,
+    maxZoom: 15,
+    layers: [OpenStreetMap_Mapnik],
+    zoomControl: false,
+});
+
+var layerControl = L.control.layers(baseMaps).addTo(map);
+layerControl.setPosition("bottomright")
 
 L.control.zoom({
   position: 'bottomleft'

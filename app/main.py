@@ -28,9 +28,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="app/static", html=True), name="static")
-
-
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -310,3 +307,6 @@ async def read_fares(
         # Create Feature collection
         feature_collection = FeatureCollection(features)
         return feature_collection
+
+
+app.mount("/", StaticFiles(directory="app/static", html=True), name="frontend")

@@ -1,5 +1,5 @@
 // Set basemap layers
-var OpenStreetMap_Mapnik = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+var OSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	minZoom: 11,
 	maxZoom: 15,
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -19,7 +19,7 @@ var Stadia_StamenTonerLite = L.tileLayer('https://tiles.stadiamaps.com/tiles/sta
 });
 
 baseMaps = {
-  "OSM": OpenStreetMap_Mapnik,
+  "OSM": OSM,
   "Esri World Imagery": Esri_WorldImagery,
   "Stadia Alidade Smooth": Stadia_StamenTonerLite
 }

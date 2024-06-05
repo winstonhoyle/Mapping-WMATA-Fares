@@ -1,3 +1,4 @@
+import os
 from dotenv import dotenv_values
 
 # Need this instead of `load_spatialite` because it's a gpkg
@@ -8,9 +9,10 @@ from sqlalchemy.event import listen
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 env = dotenv_values(".env")
-print(env)
-
-SQLALCHEMY_DATABASE_URL = env["SQLALCHEMY_DATABASE_URL"]
+if not env:
+    SQLALCHEMY_DATABASE_URL = os.environ['SQLALCHEMY_DATABASE_URL']
+else:
+    SQLALCHEMY_DATABASE_URL = env["SQLALCHEMY_DATABASE_URL"]
 
 # Could be any database
 engine = create_engine(

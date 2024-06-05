@@ -159,6 +159,7 @@ function getColor(d) {
   }
 }
 
+/*
 // For selection changes
 var fareSelection = document.getElementById('Fare-selection');
 fareSelection.onchange = (event) => {
@@ -171,6 +172,7 @@ fareSelection.onchange = (event) => {
     stations.addTo(map);
   }
 }
+*/
 
 map.createPane("metro");
 map.createPane("stations");
@@ -189,7 +191,7 @@ const lines_geojson_url_response = fetch(lines_geojson_url).then(response => res
     },
     pane: "metro"
   }).addTo(map);
-})
+});
 
 // add stations, they have a onEachFeature function and a circle marker
 stations_geojson_url = 'http://127.0.0.1:8000/stations?line=all&geojson=true';
@@ -207,4 +209,4 @@ const stations_geojson_url_response = fetch(stations_geojson_url).then(response 
     pane: "stations"
   }).addTo(map);
   map.fitBounds(stations.getBounds());
-})
+});

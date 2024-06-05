@@ -1,7 +1,7 @@
 ## Folder Structure
 * `csv/` has no use except for hosting then loading the tables into `lines.gpkg`
 * `geojson/` is where the GIS data from [DC GIS Portal](https://opendata.dc.gov/datasets/metro-lines-regional/about). 
-* `gpkg/` is where the main [GeoPackage](https://www.geopackage.org/) is located. `stations.gpkg` is also created but this is for development and visual purposes. `gpkg/lines.gpkg` will be the data the web application pulls from. Other tables like stations, fares, and colored loines will be located.
+* `gpkg/` is where the main [GeoPackage](https://www.geopackage.org/) is located. `stations.gpkg` is also created but this is for development and visual purposes. `gpkg/lines.gpkg` will be the data the web application pulls from. Other tables like stations, fares, and colored lines will be located.
 
 ## Mapping-WMATA-Fares Python API
 Within [wmata.py](https://github.com/winstonhoyle/Mapping-WMATA-Fares/tree/main/data/wmata.py) are the functions to retrieve data from the [WMATA API](https://developer.wmata.com/). This API is very lightweight. To do more complex python work please refer to [pywmata](https://github.com/emma-k-alexandra/pywmata).

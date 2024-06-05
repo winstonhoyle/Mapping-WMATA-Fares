@@ -5,7 +5,7 @@ This application helps visualize the confusing fare system of Washington Metropo
 
 ## Prerequisites
 
-1. Python 3.10>=
+Python 3.10>=
 
 ## Running the application
 

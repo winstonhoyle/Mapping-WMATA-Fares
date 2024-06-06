@@ -19,17 +19,14 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# For dev purposes
-#app.add_middleware(
-#    CORSMiddleware,
-#    allow_origins=["*"],
-#    allow_credentials=True,
-#    allow_methods=["*"],
-#    allow_headers=["*"],
-#)
-
-app.mount("/static", StaticFiles(directory="app/static", html=True), name="static")
-
+# Allow CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dependency
 def get_db():
@@ -111,7 +108,6 @@ async def read_all_stations(
         stations = crud.get_all_stations(db)
     else:
         stations = crud.stations_from_line_color(db, color=line)
-        print(len)
 
     if not geojson:
         return stations
@@ -311,3 +307,6 @@ async def read_fares(
         # Create Feature collection
         feature_collection = FeatureCollection(features)
         return feature_collection
+
+
+app.mount("/", StaticFiles(directory="app/static", html=True), name="frontend")

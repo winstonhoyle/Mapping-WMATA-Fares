@@ -1,7 +1,7 @@
 # Mapping-WMATA-Fares
 This application helps visualize the confusing fare system of Washington Metropolitan Area Transit Authority (WMATA).
 
-[Check it out!](http://wmatafares.com)
+[Check it out! (Link is to a GCP Cloud Service): https://wmata-fares-drryx36w6a-uw.a.run.app/](https://wmata-fares-drryx36w6a-uw.a.run.app/)
 
 ## Prerequisites
 

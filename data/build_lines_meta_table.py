@@ -7,7 +7,7 @@ from tqdm import tqdm
 from wmata import WMATA
 
 
-def main(api_key):
+def build_tables(api_key):
 
     wmata = WMATA(api_key=api_key)
 

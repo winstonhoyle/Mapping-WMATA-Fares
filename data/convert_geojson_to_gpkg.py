@@ -1,7 +1,7 @@
 import geopandas
 
 
-def main():
+def convert_geojson_to_gpkg():
 
     # Open then write out in geopandas. can do in ogr2ogr but too much bloat install GDAL
     stations = geopandas.read_file("geojson/stations.geojson")

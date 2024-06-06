@@ -7,7 +7,7 @@ from tqdm import tqdm
 from wmata import WMATA
 
 
-def main(api_key: str):
+def make_station_tables(api_key: str):
 
     # Create output objects for station name table
     stations_csvfile = open("csv/stations.csv", "w")

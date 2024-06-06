@@ -6,9 +6,10 @@ __pycache__/
 *.logs
 *.ipynb
 
-*.gpkg
 *.csv
 *.local
 
+.gcp/
 webapp/
 data/geojson/stations.geojson
+data/gpkg/stations.gpkg

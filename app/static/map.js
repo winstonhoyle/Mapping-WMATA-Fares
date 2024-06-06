@@ -1,17 +1,51 @@
-//add basemap
-var map = L.map('map', {
+// Set basemap layers
+var OSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	minZoom: 11,
+	maxZoom: 15,
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+
+var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
   minZoom: 11,
-  maxZoom: 15,
-  zoomControl: false
-}).setView([38.898303, -77.028099], 11);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 15,
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+	maxZoom: 15,
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+
+var CyclOSM = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+  minZoom: 11,
+	maxZoom: 15,
+	attribution: '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+
+baseMaps = {
+  "OSM": OSM,
+  "Esri World Imagery": Esri_WorldImagery,
+  "Cycle Map - OSM": CyclOSM
+}
+
+var map = L.map('map', {
+    center: [38.898303, -77.028099],
+    minZoom: 11,
+    maxZoom: 15,
+    layers: [OSM],
+    zoomControl: false,
+});
+
+var layerControl = L.control.layers(baseMaps).addTo(map);
+layerControl.setPosition("bottomright")
 
 L.control.zoom({
   position: 'bottomleft'
 }).addTo(map);
+
+// Save station info
+var target;
+
+// Lines for later
+var selectedLine;
+var selectedStations;
+var updatedStations;
+var updatedStationsOnLine;
 
 //legend
 var legend = L.control({ position: 'bottomright' });
@@ -46,56 +80,56 @@ legend.onAdd = function (map) {
   return div;
 };
 
+
+async function getStationId(stationCode) {
+  getStationUrl = '/station?code=' + stationCode;
+  let getStationResponse = await fetch(getStationUrl);
+  let data = await getStationResponse.json();
+  return data;
+}
+
 //Get fare information for a station
-function UpdateStations(station_code) {
+async function UpdateStations(stationCode) {
 
   // Remove colored stations if it exists
   if (typeof updatedStations !== 'undefined') {
     map.removeLayer(updatedStations)
   }
 
-
-  getStationUrl = 'http://127.0.0.1:8000/station?code=' + station_code
-
-  // Get station code
-  $.ajax({
-    url: getStationUrl,
-    async: false,
-    dataType: 'json',
-    success: function (data) {
-      stationId = data.station_id;
-    }
+  let stationId
+  await getStationId(stationCode).then(data => {
+    stationId = data.station_id
   });
 
+
   // Get all fares for that station
-  getFaresUrl = 'http://127.0.0.1:8000/fare/' + stationId + '?geojson=true'
-  $.ajax({
-    url: getFaresUrl,
-    async: false,
-    dataType: 'json',
-    success: function (data) {
-      stationGeoJSONdata = data
-      updatedStations = L.geoJson(data, {
-        pointToLayer: function (feature, latlng) {
-          return L.circleMarker(latlng, {
-            radius: 5,
-            color: "#000000",
-            fillColor: "#ffffff",
-            fillOpacity: 1.0
-          }).bindTooltip(feature.properties.name);
-        },
-        onEachFeature: onEachFeature,
-        pane: "stations"
-      }).addTo(map);
-      map.removeLayer(stations)
-    }
+  getFaresUrl = '/fare/' + stationId + '?geojson=true';
+  const stationsGeojsonUrlResponse = await fetch(getFaresUrl).then(response => response.json()).then(response => {
+    updatedStations = L.geoJson(response, {
+      pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, {
+          radius: 5,
+          color: "#000000",
+          fillColor: "#ffffff",
+          fillOpacity: 1.0
+        }).bindTooltip(feature.properties.name);
+      },
+      onEachFeature: onEachFeature,
+      pane: "stations"
+    }).addTo(map);
+    map.removeLayer(stations);
   });
 
 }
 
 //highlight station function
-function highlightFeature(e) {
+async function highlightFeature(e) {
 
+  // Get target station aka clicked station
+  target = e.target;
+  let stationCode = target.feature.properties.code
+
+  // Get fare value so we can query
   fareType = document.getElementById("Fare-selection").value;
 
   // If drop down empty
@@ -103,18 +137,30 @@ function highlightFeature(e) {
     return
   }
 
+  // Remove old stations layer
+  map.removeLayer(stations)
 
-  var target = e.target;
-
-  UpdateStations(target.feature.properties.code);
+  // Create new station
+  await UpdateStations(stationCode);
   updatedStations.eachLayer(function (layer) {
+
     fare = layer.feature.properties[fareType];
-    layer.setStyle({
-      radius: 5,
-      color: "#000000",
-      fillColor: getColor(fare),
-      weight: 1
-    }).bindTooltip("<center>" + layer.feature.properties.name + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
+
+    if (layer.feature.properties.code === stationCode) {
+      layer.setStyle({
+        radius: 5,
+        color: "#000000",
+        fillColor: "#000000",
+        weight: 1
+      }).bindTooltip("<center>Your Station<br>" + layer.feature.properties.name + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
+    } else {
+      layer.setStyle({
+        radius: 5,
+        color: "#000000",
+        fillColor: getColor(fare),
+        weight: 1
+      }).bindTooltip("<center>" + layer.feature.properties.name + "<br>" + "Fare: $" + fare.toFixed(2) + "</center>");
+    }
 
   });
 
@@ -159,19 +205,36 @@ function getColor(d) {
   }
 }
 
+function getLineColor(color) {
+  switch (color) {
+    case "red":
+      return '#BF0D3E'
+    case "orange":
+      return '#ED8B00'
+    case "blue":
+      return '#009CDE'
+    case "green":
+      return '#00B140'
+    case "yellow":
+      return '#FFD100'
+    case "silver":
+      return '#919D9D'
+  }
+}
+
 map.createPane("metro");
 map.createPane("stations");
 map.getPane("stations").style.zIndex = 999;
 map.getPane("metro").style.zIndex = 200;
 
 // add lines geojson
-lines_geojson_url = 'http://127.0.0.1:8000/lines';
+lines_geojson_url = '/lines';
 const lines_geojson_url_response = fetch(lines_geojson_url).then(response => response.json()).then(response => {
   lines = L.geoJson(response, {
     style: function (features) {
       return {
         weight: 6,
-        color: features.properties.name
+        color: getLineColor(features.properties.name)
       }
     },
     pane: "metro"
@@ -179,7 +242,7 @@ const lines_geojson_url_response = fetch(lines_geojson_url).then(response => res
 });
 
 // add stations, they have a onEachFeature function and a circle marker
-stations_geojson_url = 'http://127.0.0.1:8000/stations?line=all&geojson=true';
+stations_geojson_url = '/stations?line=all&geojson=true';
 const stations_geojson_url_response = fetch(stations_geojson_url).then(response => response.json()).then(response => {
   stations = L.geoJson(response, {
     pointToLayer: function (feature, latlng) {

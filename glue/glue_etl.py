@@ -7,18 +7,16 @@ import boto3
 import pandas as pd
 import requests
 
-# ========= CONFIG ==========
-SECRETS_MANAGER_NAME = os.environ.get("SECRETS_MANAGER_NAME")
+WMATA_API_KEY = os.environ.get("WMATA_API_KEY")
 S3_BUCKET = os.environ.get("S3_BUCKET")
 S3_PREFIX = os.environ.get("S3_PREFIX", "wmata/")
 AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
 
-# ========= AWS CLIENTS ==========
 s3 = boto3.client("s3", region_name=AWS_REGION)
 secrets_client = boto3.client("secretsmanager", region_name=AWS_REGION)
 
 
-# ========= WMATA API ==========
+# ========= Internal WMATA API ==========
 class WMATA:
     def __init__(self, api_key: str):
         self.headers = {"api_key": api_key}
@@ -48,24 +46,11 @@ class WMATA:
         ).json()
 
 
-# ========= UTILITY FUNCTIONS ==========
-def get_secret(secret_name: str, key_name: str):
-    """Retrieve a secret value from AWS Secrets Manager."""
-    response = secrets_client.get_secret_value(SecretId=secret_name)
-    secret = json.loads(response["SecretString"])
-    return secret[key_name]
-
-
-def upload_to_s3(local_path: str):
-    """Upload a local file to S3 under the configured prefix."""
-    key = f"{S3_PREFIX}{os.path.basename(local_path)}"
-    s3.upload_file(local_path, S3_BUCKET, key)
-    print(f"Uploaded {local_path} to s3://{S3_BUCKET}/{key}")
-
-
 # ========= ETL FUNCTIONS ==========
 def extract_and_transform_stations(wmata):
-    """Fetch all stations and fares, return CSV and GeoJSON paths."""
+    """
+    Fetch all stations and fares, return CSV and GeoJSON paths.
+    """
     stations_csv = tempfile.NamedTemporaryFile(delete=False, suffix=".csv").name
     fares_csv = tempfile.NamedTemporaryFile(delete=False, suffix=".csv").name
     stations_geojson = tempfile.NamedTemporaryFile(delete=False, suffix=".geojson").name
@@ -149,15 +134,16 @@ def build_lines_csv(wmata, stations_csv):
 
 # ========= MAIN ==========
 def main():
-    WMATA_API_KEY = get_secret(SECRETS_MANAGER_NAME, "WMATA_API_KEY")
-    wmata = WMATA(WMATA_API_KEY)
+
+    wmata = WMATA(api_key=WMATA_API_KEY)
 
     stations_csv, fares_csv, stations_geojson = extract_and_transform_stations(wmata)
     lines_csv = build_lines_csv(wmata, stations_csv)
 
     # Upload to S3
-    for f in [stations_csv, fares_csv, stations_geojson, lines_csv]:
-        upload_to_s3(f)
+    for file_path in [stations_csv, fares_csv, stations_geojson, lines_csv]:
+        key = f"{S3_PREFIX}{os.path.basename(file_path)}"
+        s3.upload_file(file_path, S3_BUCKET, key)
 
 
 if __name__ == "__main__":

@@ -1,41 +1,22 @@
-# IAM Role: Lambda
-resource "aws_iam_role" "lambda_role" {
-  name = "wmata-lambda-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "lambda.amazonaws.com"
-      }
-    }]
-  })
+# IAM User for Terraform deploys
+resource "aws_iam_user" "wmata_app" {
+  name = "wmata-fares-deployer"
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
-  role       = aws_iam_role.lambda_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+resource "aws_iam_user_policy_attachment" "wmata_app_admin" {
+  user       = aws_iam_user.wmata_app.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
-# IAM Role: Glue
-resource "aws_iam_role" "glue_role" {
-  name = "wmata-glue-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "glue.amazonaws.com"
-      }
-    }]
-  })
+resource "aws_iam_access_key" "wmata_app" {
+  user = aws_iam_user.wmata_app.name
 }
 
-resource "aws_iam_role_policy_attachment" "glue_s3_full_access" {
-  role       = aws_iam_role.glue_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+output "wmata_app_access_key_id" {
+  value = aws_iam_access_key.wmata_app.id
+}
+
+output "wmata_app_secret_access_key" {
+  value     = aws_iam_access_key.wmata_app.secret
+  sensitive = true
 }

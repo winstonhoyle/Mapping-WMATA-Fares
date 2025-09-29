@@ -1,15 +1,18 @@
 __pycache__/
 .ipynb_checkpoints/
+data/*.geojson
+data/*.json
 .venv/
 *.env
 *.db
 *.logs
 *.ipynb
+*.zip
 
 *.csv
 *.local
 
-.gcp/
-webapp/
-data/geojson/stations.geojson
-data/gpkg/stations.gpkg
+package/
+.terraform/
+.terraform*
+terraform.tfstate*

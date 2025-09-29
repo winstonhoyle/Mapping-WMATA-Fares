@@ -5,7 +5,7 @@ variable "aws_region" {
 }
 
 variable "bucket_name" {
-  description = "S3 bucket for app, lambda, and glue"
+  description = "S3 bucket for app and lambda"
   type        = string
   default     = "wmata-fares"
 }

@@ -78,5 +78,4 @@ jobs:
       - name: Deploy to S3
         run: |
           aws s3 sync app/build/ s3://$S3_BUCKET/$S3_PREFIX/ \
-            --delete \
-            --acl public-read
+            --delete 

@@ -1,8 +1,6 @@
 # Mapping-WMATA-Fares
 This application helps visualize the confusing fare system of Washington Metropolitan Area Transit Authority (WMATA).
 
-Check it out on [https://wmatafares.com](https://wmatafares.com)
-
 ## Prerequisites
 
 * AWS Account, the services used are S3, [Lambda](https://aws.amazon.com/lambda/), [IAM](https://aws.amazon.com/iam/), and [API Gateway](https://aws.amazon.com/api-gateway/)
@@ -19,7 +17,7 @@ This is a mix of automated CI/CD, Infrastructure as Code ([IaC](https://en.wikip
 
 1. **Create IAM users & roles, a Lambda function, an API Gateway and an S3 bucket**
 
-   a. [Authenticate aws cli credentials](https://docs.aws.amazon.com/cli/latest/reference/configure/)
+   a. [Authenticate aws-cli credentials](https://docs.aws.amazon.com/cli/latest/reference/configure/)
    ```
    cd infra
    terraform plan

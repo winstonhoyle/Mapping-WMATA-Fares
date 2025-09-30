@@ -9,120 +9,6 @@ export default function MapView() {
     const [fareType, setFareType] = useState("all");
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-    // Initialize the map
-    useEffect(() => {
-        const OSM = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            minZoom: 11,
-            maxZoom: 15,
-            attribution:
-                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        });
-
-        const mapInstance = L.map(mapRef.current, {
-            center: [38.898303, -77.028099],
-            zoom: 13,
-            layers: [OSM],
-            zoomControl: false,
-        });
-
-        mapInstance.createPane("metro");
-        mapInstance.createPane("stations");
-        mapInstance.getPane("stations").style.zIndex = 999;
-        mapInstance.getPane("metro").style.zIndex = 200;
-
-        setMap(mapInstance);
-    }, []);
-
-    // Get Fares for Station
-    const handleStationClick = useCallback(async (feature) => {
-        const stationCode = feature.properties.Code;
-        const fareValue = feature.properties[fareType] || 0;
-
-        // Remove previous highlighted stations if they exist
-        if (map?.prevStationLayer) {
-            map.removeLayer(map.prevStationLayer);
-        }
-
-        // Fetch fares for clicked station
-        try {
-            const res = await fetch(
-                `https://uoo13y1xn3.execute-api.us-east-1.amazonaws.com/fares/${stationCode}`
-            );
-            const geojsonData = await res.json();
-
-            // Add new layer for this station
-            const newLayer = L.geoJson(geojsonData, {
-                pointToLayer: (feature, latlng) =>
-                    L.circleMarker(latlng, {
-                        radius: 5,
-                        color: "#000000",
-                        fillColor: getStationColor(fareValue),
-                        weight: 1
-                    }).bindTooltip(
-                        `${feature.properties.Name}<br>Fare: $${fareValue}`
-                    ),
-            }).addTo(map);
-
-            // Store reference to remove later
-            map.prevStationLayer = newLayer;
-        } catch (err) {
-            console.error("Failed to fetch station fares:", err);
-        }
-    }, [map]);
-
-
-
-    // Fetch and render lines + stations whenever map is ready
-    useEffect(() => {
-        if (!map) return;
-
-        let linesLayer;
-        let stationsLayer;
-
-        // Fetch all lines
-        fetch(`${API_BASE_URL}/lines`)
-            .then((res) => res.json())
-            .then((linesData) => {
-                linesLayer = L.geoJson(linesData, {
-                    style: (feature) => ({
-                        weight: 6,
-                        color: getLineColor(feature.properties.NAME),
-                    }),
-                    pane: "metro",
-                }).addTo(map);
-            })
-            .catch((err) => console.error("Failed to fetch lines:", err));
-
-        // Fetch stations (all or by line)
-        fetch(`${API_BASE_URL}/stations`)
-            .then((res) => res.json())
-            .then((stationsData) => {
-                stationsLayer = L.geoJson(stationsData, {
-                    pointToLayer: (feature, latlng) =>
-                        L.circleMarker(latlng, {
-                            radius: 5,
-                            color: "#000000",
-                            fillColor: "#ffffff",
-                            fillOpacity: 1.0,
-                        }).bindTooltip(feature.properties.Name),
-                    pane: "stations",
-                    onEachFeature: (feature, layer) => {
-                        layer.on({
-                            click: () => handleStationClick(feature),
-                        })
-                    }
-                }).addTo(map);
-
-                map.fitBounds(stationsLayer.getBounds());
-            });
-
-        return () => {
-            // Cleanup old layers
-            if (linesLayer) map.removeLayer(linesLayer);
-            if (stationsLayer) map.removeLayer(stationsLayer);
-        };
-    }, [map, line]); // Re-run if map exists or selected line changes
-
     const getLineColor = (color) => {
         switch (color) {
             case "red":
@@ -174,6 +60,117 @@ export default function MapView() {
                 return '#FFFFFF';
         }
     };
+    // Initialize the map
+    useEffect(() => {
+        const OSM = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            minZoom: 11,
+            maxZoom: 15,
+            attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        });
+
+        const mapInstance = L.map(mapRef.current, {
+            center: [38.898303, -77.028099],
+            zoom: 13,
+            layers: [OSM],
+            zoomControl: false,
+        });
+
+        mapInstance.createPane("metro");
+        mapInstance.createPane("stations");
+        mapInstance.getPane("stations").style.zIndex = 999;
+        mapInstance.getPane("metro").style.zIndex = 200;
+
+        setMap(mapInstance);
+    }, []);
+
+    // Get Fares for Station
+    const handleStationClick = useCallback(async (feature) => {
+        const stationCode = feature.properties.Code;
+        const fareValue = feature.properties[fareType] || 0;
+        console.log(feature);
+        // Remove previous highlighted stations if they exist
+        if (map?.prevStationLayer) {
+            map.removeLayer(map.prevStationLayer);
+        }
+
+        // Fetch fares for clicked station
+        try {
+            const res = await fetch(
+                `https://uoo13y1xn3.execute-api.us-east-1.amazonaws.com/fares/${stationCode}`
+            );
+            const geojsonData = await res.json();
+
+            // Add new layer for this station
+            const newLayer = L.geoJson(geojsonData, {
+                pointToLayer: (feature, latlng) =>
+                    L.circleMarker(latlng, {
+                        radius: 5,
+                        color: "#000000",
+                        fillColor: getStationColor(fareValue),
+                        weight: 1
+                    }).bindTooltip(
+                        `${feature.properties.Name}<br>Fare: $${fareValue}`
+                    ),
+            }).addTo(map);
+
+            // Store reference to remove later
+            map.prevStationLayer = newLayer;
+        } catch (err) {
+            console.error("Failed to fetch station fares:", err);
+        }
+    }, [map, fareType]);
+
+
+    // Fetch and render lines + stations whenever map is ready
+    useEffect(() => {
+        if (!map) return;
+
+        let linesLayer;
+        let stationsLayer;
+
+        // Fetch all lines
+        fetch(`${API_BASE_URL}/lines`)
+            .then((res) => res.json())
+            .then((linesData) => {
+                linesLayer = L.geoJson(linesData, {
+                    style: (feature) => ({
+                        weight: 6,
+                        color: getLineColor(feature.properties.NAME),
+                    }),
+                    pane: "metro",
+                }).addTo(map);
+            })
+            .catch((err) => console.error("Failed to fetch lines:", err));
+
+        // Fetch stations (all or by line)
+        fetch(`${API_BASE_URL}/stations`)
+            .then((res) => res.json())
+            .then((stationsData) => {
+                stationsLayer = L.geoJson(stationsData, {
+                    pointToLayer: (feature, latlng) =>
+                        L.circleMarker(latlng, {
+                            radius: 5,
+                            color: "#000000",
+                            fillColor: "#ffffff",
+                            fillOpacity: 1.0,
+                        }).bindTooltip(feature.properties.Name),
+                    pane: "stations",
+                    onEachFeature: (feature, layer) => {
+                        layer.on({
+                            click: () => handleStationClick(feature),
+                        })
+                    }
+                }).addTo(map);
+
+                map.fitBounds(stationsLayer.getBounds());
+            });
+
+        return () => {
+            if (linesLayer) map.removeLayer(linesLayer);
+            if (stationsLayer) map.removeLayer(stationsLayer);
+        };
+    }, [map, line, API_BASE_URL, handleStationClick]);
 
 
     return (

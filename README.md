@@ -1,25 +1,49 @@
 # Mapping-WMATA-Fares
 This application helps visualize the confusing fare system of Washington Metropolitan Area Transit Authority (WMATA).
 
-Check it out on [http://wmatafares.com](http://wmatafares.com)
+Check it out on [https://wmatafares.com](https://wmatafares.com)
 
 ## Prerequisites
 
-* Python 3.10>=
-* (Optional) [Spatialite](https://www.gaia-gis.it/fossil/libspatialite/index)
-* (Optional) [Sqlite3](https://sqlite.org/)
+* AWS Account and services: S3, Lambda, Glue, and API Gateway
+* Optional: Route 53 if you want a domain
 
-## Running the application
+## Building the App
 
-1. Create a `.env` file based out of the [env.sample](https://github.com/winstonhoyle/Mapping-WMATA-Fares/tree/main/env.sample). You do not need `WMATA_API_KEY` unless you follow the steps in [/data](https://github.com/winstonhoyle/Mapping-WMATA-Fares/tree/main/data/README.md). `SQLALCHEMY_DATABASE_URL` Just points to the Sqlite3 db which is a [Geopackage](https://www.geopackage.org/), if you have created these tables on another database system you can change this value to any database url. 
+5. Set up API Gateway to point to the lambda function then load the gateway url in a browser to see the webapp!
 
-```bash
-python3.10 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-cd app/
-fastapi run main.py
-```
+
+1. Create an [AWS Glue Job](https://aws.amazon.com/glue/)
+   - See documentation in [glue/README.md](glue/README.md)
+   - Make sure the IAM role has S3 read/write permissions
+
+2. Create a [Lambda Function](https://aws.amazon.com/lambda/)
+   - See documentation in [lambda/README.md](lambda/README.md)
+   - Set environment variables (S3_BUCKET, S3_PREFIX, WMATA_PARAM_NAME)
+   - Install dependencies and package function
+
+3. Build React app
+   - See app/README.md
+   - Run:
+     ```
+     npm install
+     npm run build
+     ```
+   - Set REACT_APP_API_BASE_URL in .env to point to API Gateway URL
+
+4. Run deployment workflows locally
+   - Install act:
+     brew install act   # macOS
+     choco install act -y  # Windows
+   - Run workflow:
+     act -j <job_name>
+   - Pass secrets if needed with -s or .env file
+
+5. Set up API Gateway
+   - Point to the Lambda function
+   - Enable CORS
+   - Load API Gateway URL in a browser to view the web app
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

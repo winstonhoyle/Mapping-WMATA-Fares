@@ -1,3 +1,4 @@
+# Create the S3 bucket
 resource "aws_s3_bucket" "wmata" {
   bucket        = var.bucket_name
   force_destroy = true
@@ -29,7 +30,7 @@ resource "aws_s3_bucket_website_configuration" "wmata_website" {
   }
 }
 
-# Public access block (optional)
+# Public access block (allow public reads)
 resource "aws_s3_bucket_public_access_block" "wmata" {
   bucket                  = aws_s3_bucket.wmata.id
   block_public_acls       = false
@@ -38,6 +39,25 @@ resource "aws_s3_bucket_public_access_block" "wmata" {
   restrict_public_buckets = false
 }
 
+# Bucket policy for public read access
+resource "aws_s3_bucket_policy" "wmata_bucket_policy" {
+  bucket = aws_s3_bucket.wmata.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "PublicReadGetObject"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource  = "${aws_s3_bucket.wmata.arn}/*"
+      }
+    ]
+  })
+}
+
+# Output the website endpoint
 output "frontend_bucket_website_endpoint" {
   description = "S3 static website endpoint for frontend"
   value       = aws_s3_bucket_website_configuration.wmata_website.website_endpoint

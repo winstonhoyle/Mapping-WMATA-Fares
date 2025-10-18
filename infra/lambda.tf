@@ -1,35 +1,36 @@
-resource "null_resource" "build_lambda" {
-  triggers = {
-    lambda_sources = join(",", fileset("${path.module}/../lambda", "**/*.py"))
-  }
-
-  provisioner "local-exec" {
-    command = <<EOT
-      mkdir -p package
-      cp ../lambda/*.py package/
-      pip install --target ./package -r ../requirements.txt --no-cache-dir
-      cd package
-      zip -rq ../lambda.zip . -x "*.pyc" -x "*__pycache__*"
-      cd ..
-      rm -rf package
-    EOT
-  }
-}
-
-resource "aws_lambda_function" "fare_api" {
-  depends_on = [null_resource.build_lambda]
-
-  function_name = "WMATA-fare-api"
-  role          = aws_iam_role.lambda_role.arn
-  handler       = "fare_api.lambda_handler"
+############################################################
+# Lambda Function
+############################################################
+resource "aws_lambda_function" "wmata-fares-api" {
+  function_name = "wmata-fares-api-lambda"
+  role          = aws_iam_role.wmata_fares_lambda_role.arn
+  handler       = "fare_api.lambda_function"
   runtime       = "python3.12"
 
-  filename = "${path.module}/lambda.zip"
+  filename         = var.lambda_zip_path
+  source_code_hash = filebase64sha256(var.lambda_zip_path)
 
   environment {
     variables = {
       S3_BUCKET = aws_s3_bucket.wmata.bucket
       S3_PREFIX = "data/"
+      REGION    = var.aws_region
     }
   }
+  depends_on = [
+    aws_iam_role_policy.lambda_policy
+  ]
+}
+
+############################################################
+# Lambda Permission for API Gateway
+############################################################
+resource "aws_lambda_permission" "allow_apigw" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.wmata-fares-api.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  # Use /*/* to allow any stage, any route
+  source_arn = "${aws_apigatewayv2_api.wmata_fares_api.execution_arn}/*/*"
 }

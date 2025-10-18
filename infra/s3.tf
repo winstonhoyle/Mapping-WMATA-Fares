@@ -4,7 +4,7 @@ resource "aws_s3_bucket" "wmata" {
   force_destroy = true
 
   tags = {
-    Name = "WMATA Frontend and Data"
+    Name = "WMATA Data"
   }
 }
 
@@ -14,19 +14,6 @@ resource "aws_s3_bucket_versioning" "wmata_versioning" {
 
   versioning_configuration {
     status = "Enabled"
-  }
-}
-
-# Configure static website hosting
-resource "aws_s3_bucket_website_configuration" "wmata_website" {
-  bucket = aws_s3_bucket.wmata.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "index.html"
   }
 }
 
@@ -55,10 +42,4 @@ resource "aws_s3_bucket_policy" "wmata_bucket_policy" {
       }
     ]
   })
-}
-
-# Output the website endpoint
-output "frontend_bucket_website_endpoint" {
-  description = "S3 static website endpoint for frontend"
-  value       = aws_s3_bucket_website_configuration.wmata_website.website_endpoint
 }

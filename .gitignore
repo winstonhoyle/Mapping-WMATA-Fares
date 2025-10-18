@@ -16,3 +16,5 @@ package/
 .terraform/
 .terraform*
 terraform.tfstate*
+infra/terraform.tfvars
+lambda/build/

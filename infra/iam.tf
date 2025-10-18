@@ -1,81 +1,50 @@
-# IAM User for Terraform deploys
-resource "aws_iam_user" "wmata_app" {
-  name = "wmata-fares-deployer"
-}
+resource "aws_iam_role" "wmata_fares_lambda_role" {
+  name = "wmata-fares-lambda-role"
 
-# IAM User for GitHub Actions
-resource "aws_iam_user" "github_actions" {
-  name = "github-actions-deployer"
-}
-
-# Policy document for GitHub Actions
-data "aws_iam_policy_document" "github_actions_policy_doc" {
-  statement {
-    actions = [
-      "lambda:UpdateFunctionCode",
-      "lambda:GetFunction",
-      "lambda:GetFunctionConfiguration"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
     ]
-    resources = ["*"]
-  }
+  })
+}
 
-  statement {
-    actions = [
-      "s3:PutObject",
-      "s3:GetObject",
-      "s3:ListBucket"
+resource "aws_iam_role_policy" "lambda_policy" {
+  name = "wmata-fares-lambda-policy"
+  role = aws_iam_role.wmata_fares_lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      # S3 access for fare data
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject"
+        ],
+        Resource = [
+          "arn:aws:s3:::${aws_s3_bucket.wmata.bucket}",
+          "arn:aws:s3:::${aws_s3_bucket.wmata.bucket}/*"
+        ]
+      },
+      # Logs
+      {
+        Effect = "Allow",
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = "arn:aws:logs:*:*:*"
+      }
     ]
-    resources = [
-      aws_s3_bucket.wmata.arn,
-      "${aws_s3_bucket.wmata.arn}/*"
-    ]
-  }
-}
-
-# Create the policy
-resource "aws_iam_policy" "github_actions_policy" {
-  name        = "github-actions-policy"
-  description = "Policy for GitHub Actions deployer"
-  policy      = data.aws_iam_policy_document.github_actions_policy_doc.json
-}
-
-# Attach policy to GitHub Actions user
-resource "aws_iam_user_policy_attachment" "github_actions_attach" {
-  user       = aws_iam_user.github_actions.name
-  policy_arn = aws_iam_policy.github_actions_policy.arn
-}
-
-# Create access key for GitHub Actions user
-resource "aws_iam_access_key" "github_actions_key" {
-  user = aws_iam_user.github_actions.name
-}
-
-output "github_actions_aws_access_key_id" {
-  value     = aws_iam_access_key.github_actions_key.id
-  sensitive = true
-}
-
-output "github_actions_aws_secret_access_key" {
-  value     = aws_iam_access_key.github_actions_key.secret
-  sensitive = true
-}
-
-# Attach AdminAccess for Terraform deploy user
-resource "aws_iam_user_policy_attachment" "wmata_app_admin" {
-  user       = aws_iam_user.wmata_app.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-}
-
-# Access key for Terraform deploy user
-resource "aws_iam_access_key" "wmata_app" {
-  user = aws_iam_user.wmata_app.name
-}
-
-output "wmata_app_access_key_id" {
-  value = aws_iam_access_key.wmata_app.id
-}
-
-output "wmata_app_secret_access_key" {
-  value     = aws_iam_access_key.wmata_app.secret
-  sensitive = true
+  })
 }

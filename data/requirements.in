@@ -1,0 +1,4 @@
+boto3
+geojson
+requests
+python-dotenv

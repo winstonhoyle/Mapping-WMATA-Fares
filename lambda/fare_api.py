@@ -5,7 +5,7 @@ from typing import Optional
 import boto3
 
 S3_BUCKET = os.environ.get("S3_BUCKET")
-S3_PREFIX = os.environ.get("S3_PREFIX", "wmata-fares/data/")
+S3_PREFIX = os.environ.get("S3_PREFIX", "data/")
 
 STATIONS_FILE = f"{S3_PREFIX}stations.geojson"
 FARES_FILE = f"{S3_PREFIX}fares.json"
@@ -37,7 +37,7 @@ def get_station_by_code(station_id: str) -> Optional[dict]:
     return station
 
 
-def lambda_handler(event, context) -> dict:
+def lambda_function(event, context) -> dict:
     path = event.get("rawPath", "/")
     query = event.get("queryStringParameters") or {}
 

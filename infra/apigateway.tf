@@ -1,5 +1,5 @@
-resource "aws_apigatewayv2_api" "http_api" {
-  name          = "WMATA-API"
+resource "aws_apigatewayv2_api" "wmata_fares_api" {
+  name          = "wmata-fares-api"
   protocol_type = "HTTP"
 
   cors_configuration {
@@ -10,34 +10,68 @@ resource "aws_apigatewayv2_api" "http_api" {
   }
 }
 
-resource "aws_apigatewayv2_integration" "lambda_integration" {
-  api_id                 = aws_apigatewayv2_api.http_api.id
+resource "aws_apigatewayv2_integration" "fares_integration" {
+  api_id                 = aws_apigatewayv2_api.wmata_fares_api.id
   integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.fare_api.arn
+  integration_uri        = aws_lambda_function.wmata-fares-api.arn
   payload_format_version = "2.0"
 }
 
-resource "aws_apigatewayv2_stage" "default" {
-  api_id      = aws_apigatewayv2_api.http_api.id
-  name        = "$default" # or "prod" if you want
+resource "aws_apigatewayv2_route" "stations" {
+  api_id    = aws_apigatewayv2_api.wmata_fares_api.id
+  route_key = "GET /stations"
+  target    = "integrations/${aws_apigatewayv2_integration.fares_integration.id}"
+}
+
+resource "aws_apigatewayv2_route" "line" {
+  api_id    = aws_apigatewayv2_api.wmata_fares_api.id
+  route_key = "GET /lines"
+  target    = "integrations/${aws_apigatewayv2_integration.fares_integration.id}"
+}
+
+resource "aws_apigatewayv2_route" "station" {
+  api_id    = aws_apigatewayv2_api.wmata_fares_api.id
+  route_key = "GET /station"
+  target    = "integrations/${aws_apigatewayv2_integration.fares_integration.id}"
+}
+
+resource "aws_apigatewayv2_route" "fares" {
+  api_id    = aws_apigatewayv2_api.wmata_fares_api.id
+  route_key = "GET /fares"
+  target    = "integrations/${aws_apigatewayv2_integration.fares_integration.id}"
+}
+
+
+resource "aws_apigatewayv2_deployment" "fares_deployment" {
+  api_id = aws_apigatewayv2_api.wmata_fares_api.id
+
+  depends_on = [
+    aws_apigatewayv2_route.stations,
+    aws_apigatewayv2_route.line,
+    aws_apigatewayv2_route.station,
+    aws_apigatewayv2_route.fares,
+    aws_apigatewayv2_integration.fares_integration
+  ]
+}
+
+resource "aws_apigatewayv2_stage" "flights_stage" {
+  api_id      = aws_apigatewayv2_api.wmata_fares_api.id
+  name        = "$default"
   auto_deploy = true
 }
 
-resource "aws_apigatewayv2_route" "catch_all" {
-  api_id    = aws_apigatewayv2_api.http_api.id
-  route_key = "ANY /{proxy+}"
-  target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
+resource "aws_apigatewayv2_domain_name" "api_domain" {
+  domain_name = "api.wmatafares.com"
+
+  domain_name_configuration {
+    certificate_arn = aws_acm_certificate_validation.api_cert_validation.certificate_arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
 }
 
-resource "aws_lambda_permission" "apigw" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.fare_api.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
-}
-
-output "api_gateway_invoke_url" {
-  description = "Invoke URL for the WMATA API Gateway"
-  value       = aws_apigatewayv2_api.http_api.api_endpoint
+resource "aws_apigatewayv2_api_mapping" "api_mapping" {
+  api_id      = aws_apigatewayv2_api.wmata_fares_api.id
+  domain_name = aws_apigatewayv2_domain_name.api_domain.domain_name
+  stage       = aws_apigatewayv2_stage.flights_stage.name
 }

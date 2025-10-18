@@ -23,10 +23,7 @@ def upload_json(obj: Union[geojson.FeatureCollection, list, dict], key: str):
     Upload a JSON-like object to S3 in memory
     """
     buf = io.BytesIO()
-    if isinstance(obj, geojson.FeatureCollection):
-        buf.write(geojson.dumps(obj).encode("utf-8"))
-    else:
-        buf.write(json.dumps(obj).encode("utf-8"))
+    buf.write(json.dumps(obj).encode("utf-8"))
     buf.seek(0)
     s3.upload_fileobj(buf, S3_BUCKET, key)
 
@@ -67,8 +64,8 @@ def extract_and_transform(api_key: str) -> Tuple[geojson.FeatureCollection, list
     for s in stations_json:
         properties = s.copy()
         station_code = properties["Code"]
-        lat = properties.pop("Lat")
-        lon = properties.pop("Lon")
+        lat = round(properties.pop("Lat"),6)
+        lon = round(properties.pop("Lon"),6)
 
         # Create a Feature
         feature = geojson.Feature(

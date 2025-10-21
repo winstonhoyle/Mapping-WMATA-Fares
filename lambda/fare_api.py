@@ -1,8 +1,12 @@
 import json
+import logging
 import os
 from typing import Optional
 
 import boto3
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 S3_BUCKET = os.environ.get("S3_BUCKET")
 S3_PREFIX = os.environ.get("S3_PREFIX", "data/")
@@ -20,11 +24,6 @@ def load_file(key: str) -> dict:
     return json.loads(data)
 
 
-STATIONS_GEOJSON = load_file(STATIONS_FILE)
-LINES_GEOJSON = load_file(LINES_FILE)
-FARES_JSON = load_file(FARES_FILE)
-
-
 def get_station_by_code(station_id: str) -> Optional[dict]:
     station = next(
         (
@@ -35,6 +34,11 @@ def get_station_by_code(station_id: str) -> Optional[dict]:
         None,
     )
     return station
+
+
+STATIONS_GEOJSON = load_file(STATIONS_FILE)
+LINES_GEOJSON = load_file(LINES_FILE)
+FARES_JSON = load_file(FARES_FILE)
 
 
 def lambda_function(event, context) -> dict:
@@ -78,7 +82,16 @@ def lambda_function(event, context) -> dict:
 
         elif path.startswith("/fares/"):
 
-            src_id = path.split("/")[-1]
+
+            # Split path into parts
+            parts = path.strip("/").split("/")
+            if len(parts) != 2:
+                return {
+                    "statusCode": 400,
+                    "body": json.dumps({"error": "Invalid path format. Use /fares/<station_code> only."}),
+                }
+
+            src_id = parts[-1]
 
             # Get ID
             station = get_station_by_code(src_id)
@@ -109,9 +122,22 @@ def lambda_function(event, context) -> dict:
                             "SeniorDisabled": 0.0,
                         }
                     )
+                ## Same station can have different codes (if on different lines), so skip but only skip when it fails the code check
+                elif (
+                    get_station_by_code(src_id)["properties"]["Name"]
+                    == selected_station["properties"]["Name"]
+                ):
+                    selected_station["properties"].update(
+                        {
+                            "CompositeMiles": 0.0,
+                            "RailTime": 0,
+                            "PeakTime": 0.0,
+                            "OffPeakTime": 0.0,
+                            "SeniorDisabled": 0.0,
+                        }
+                    )
                 else:
                     selected_station["properties"].update(selected_fares[dst_code])
-
             return {
                 "statusCode": 200,
                 "body": json.dumps(selected_stations_geojson),
@@ -121,4 +147,6 @@ def lambda_function(event, context) -> dict:
         return {"statusCode": 404, "body": json.dumps({"error": "Endpoint not found"})}
 
     except Exception as e:
+        logger.error(event)
+        logger.exception("Lambda failed")
         return {"statusCode": 500, "body": json.dumps({"error": str(e)})}

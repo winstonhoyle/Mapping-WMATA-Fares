@@ -19,6 +19,9 @@ resource "aws_iam_role" "github_actions" {
         Condition = {
           StringLike = {
             "token.actions.githubusercontent.com:sub" = "repo:winstonhoyle/Mapping-WMATA-Fares:ref:refs/heads/main"
+          },
+          StringEquals = {
+            "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
         }
       }

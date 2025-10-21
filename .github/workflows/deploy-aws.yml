@@ -27,7 +27,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-deploy-role
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       #### Lambda Function ####
       - name: Install dependencies and build ZIP
@@ -41,7 +41,7 @@ jobs:
           aws lambda update-function-code \
             --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
             --zip-file fileb://lambda/lambda_package.zip \
-            --region ${{ env.AWS_REGION }}
+            --region ${{ secrets.AWS_REGION }}
 
 
       #### Terraform ####

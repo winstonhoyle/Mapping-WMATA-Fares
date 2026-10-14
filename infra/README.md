@@ -13,8 +13,8 @@ front of them. State is in the `wmata-fares-terraform-state` S3 bucket with S3 n
 | `lambda.tf` | The Lambda, zipped from `../lambda/wmata_fares_api` |
 | `apigateway.tf` | HTTP API, routes, throttling, custom domain |
 | `acm.tf` | Certificate for `api.wmatafares.com` |
-| `cloudflare.tf` | Certificate validation, `api`, and `www` records |
-| `edge.tf` | SSL Full (strict), HTTPS only, `www` redirect, API rate limit and cache rules |
+| `cloudflare.tf` | Certificate validation, apex, `api`, and `www` records, Pages domain, no-email records (null MX, SPF, DMARC) |
+| `edge.tf` | SSL Full (strict), HTTPS only, HSTS, `www` redirect, API rate limit and cache rules |
 | `iam.tf`, `github.tf` | Lambda role, GitHub Actions OIDC deploy role |
 
 The Pages project is created once by hand (below) and CI deploys the app to it; Terraform attaches

@@ -49,3 +49,29 @@ resource "cloudflare_record" "apex" {
   ttl        = 1
   depends_on = [cloudflare_pages_domain.apex]
 }
+
+# The domain sends no email; these tell receivers to reject anything claiming to be from it.
+resource "cloudflare_record" "null_mx" {
+  zone_id  = var.cloudflare_zone_id
+  name     = "@"
+  type     = "MX"
+  content  = "."
+  priority = 0
+  ttl      = 3600
+}
+
+resource "cloudflare_record" "spf" {
+  zone_id = var.cloudflare_zone_id
+  name    = "@"
+  type    = "TXT"
+  content = "v=spf1 -all"
+  ttl     = 3600
+}
+
+resource "cloudflare_record" "dmarc" {
+  zone_id = var.cloudflare_zone_id
+  name    = "_dmarc"
+  type    = "TXT"
+  content = "v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s"
+  ttl     = 3600
+}

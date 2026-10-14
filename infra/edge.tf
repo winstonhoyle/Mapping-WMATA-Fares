@@ -14,6 +14,15 @@ resource "cloudflare_zone_settings_override" "zone" {
     always_use_https         = "on"
     min_tls_version          = "1.2"
     automatic_https_rewrites = "on"
+
+    # Also covers api.wmatafares.com, which Pages' _headers doesn't reach. No preload: hard to undo.
+    security_header {
+      enabled            = true
+      max_age            = 31536000
+      include_subdomains = true
+      nosniff            = true
+      preload            = false
+    }
   }
 }
 

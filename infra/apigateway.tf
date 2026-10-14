@@ -2,6 +2,9 @@ resource "aws_apigatewayv2_api" "wmata_fares_api" {
   name          = "wmata-fares-api"
   protocol_type = "HTTP"
 
+  # Only the custom domain answers, so every request passes Cloudflare's rate limit and cache.
+  disable_execute_api_endpoint = true
+
   cors_configuration {
     allow_origins = ["*"]
     allow_methods = ["GET", "OPTIONS"]
@@ -29,39 +32,26 @@ resource "aws_apigatewayv2_route" "line" {
   target    = "integrations/${aws_apigatewayv2_integration.fares_integration.id}"
 }
 
-resource "aws_apigatewayv2_route" "station" {
-  api_id    = aws_apigatewayv2_api.wmata_fares_api.id
-  route_key = "GET /station"
-  target    = "integrations/${aws_apigatewayv2_integration.fares_integration.id}"
-}
-
 resource "aws_apigatewayv2_route" "fares" {
   api_id    = aws_apigatewayv2_api.wmata_fares_api.id
   route_key = "GET /fares/{station_code}"
   target    = "integrations/${aws_apigatewayv2_integration.fares_integration.id}"
 }
 
-
-resource "aws_apigatewayv2_deployment" "fares_deployment" {
-  api_id = aws_apigatewayv2_api.wmata_fares_api.id
-
-  depends_on = [
-    aws_apigatewayv2_route.stations,
-    aws_apigatewayv2_route.line,
-    aws_apigatewayv2_route.station,
-    aws_apigatewayv2_route.fares,
-    aws_apigatewayv2_integration.fares_integration
-  ]
-}
-
+# auto_deploy handles deployments; no explicit aws_apigatewayv2_deployment needed.
 resource "aws_apigatewayv2_stage" "flights_stage" {
   api_id      = aws_apigatewayv2_api.wmata_fares_api.id
   name        = "$default"
   auto_deploy = true
+
+  default_route_settings {
+    throttling_rate_limit  = var.api_throttle_rate_limit
+    throttling_burst_limit = var.api_throttle_burst_limit
+  }
 }
 
 resource "aws_apigatewayv2_domain_name" "api_domain" {
-  domain_name = "api.wmatafares.com"
+  domain_name = "api.${var.domain}"
 
   domain_name_configuration {
     certificate_arn = aws_acm_certificate_validation.api_cert_validation.certificate_arn

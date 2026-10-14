@@ -5,23 +5,56 @@ variable "aws_region" {
 }
 
 variable "bucket_name" {
-  description = "S3 bucket for app and lambda"
+  description = "S3 bucket for the stations, lines, and fares the Lambda serves"
   type        = string
   default     = "wmata-fares"
 }
 
-# Lambda zip path, need to build before running
-variable "lambda_zip_path" {
-  description = "Path to the Lambda ZIP file"
+variable "domain" {
+  description = "Apex domain; the app is served there and the API at api.<domain>"
   type        = string
-  default     = "../lambda/lambda_package.zip"
+  default     = "wmatafares.com"
 }
 
-# Cloudfare vars
+variable "pages_project" {
+  description = "Cloudflare Pages project the app deploys to"
+  type        = string
+  default     = "wmata-fares"
+}
+
+# ------------------------------
+# API rate limiting
+# ------------------------------
+variable "api_throttle_rate_limit" {
+  description = "Steady-state requests per second allowed across the whole API"
+  type        = number
+  default     = 50
+}
+
+variable "api_throttle_burst_limit" {
+  description = "Maximum burst of concurrent requests allowed across the whole API"
+  type        = number
+  default     = 100
+}
+
+variable "api_rate_limit_per_ip" {
+  description = "Requests one IP may make to the API in 10 seconds before Cloudflare blocks it for 10 seconds"
+  type        = number
+  default     = 100
+}
+
+# ------------------------------
+# Cloudflare
+# ------------------------------
 variable "cloudflare_api_token" {
-  description = "Cloudflare API token with DNS:Edit & Zone:Read"
+  description = "Cloudflare API token for the zone: Zone Read; DNS, Zone Settings, Zone WAF, Cache Rules, and Single Redirect Edit"
   type        = string
   sensitive   = true
+}
+
+variable "cloudflare_account_id" {
+  description = "Cloudflare account that owns the Pages project"
+  type        = string
 }
 
 variable "cloudflare_zone_id" {

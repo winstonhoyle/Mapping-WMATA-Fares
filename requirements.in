@@ -1,3 +1,2 @@
-boto3
-geojson
-python-dotenv
+pre-commit
+pytest

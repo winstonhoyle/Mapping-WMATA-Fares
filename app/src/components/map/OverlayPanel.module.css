@@ -1,0 +1,93 @@
+.panel {
+  position: absolute;
+  top: var(--wf-space-105);
+  right: var(--wf-space-105);
+  z-index: var(--wf-z-panel);
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
+  max-height: calc(100dvh - 2 * var(--wf-space-105));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wf-space-1);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--wf-font-size-sm);
+  font-weight: var(--wf-font-weight-bold);
+  line-height: var(--wf-leading-tight);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--wf-space-105);
+  min-height: 0;
+  margin-top: var(--wf-space-105);
+  overflow-y: auto;
+}
+
+.fareTypes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wf-space-05) var(--wf-space-105);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: var(--wf-font-size-2xs);
+}
+
+.label {
+  width: 100%;
+  padding: 0;
+  font-weight: var(--wf-font-weight-bold);
+}
+
+.fareType {
+  display: flex;
+  align-items: center;
+  gap: var(--wf-space-05);
+  cursor: pointer;
+}
+
+.fareType input {
+  margin: 0;
+  accent-color: var(--wf-color-primary);
+}
+
+.hint {
+  margin: 0;
+  color: var(--wf-color-text-muted);
+  font-size: var(--wf-font-size-2xs);
+}
+
+/* Not display: none, so screen readers still hear the update when text arrives. */
+.status:empty {
+  position: absolute;
+}
+
+.status,
+.error {
+  margin: 0;
+  font-size: var(--wf-font-size-2xs);
+}
+
+.error {
+  color: var(--wf-color-error);
+}
+
+@media (max-width: 40em) {
+  .panel {
+    left: var(--wf-space-1);
+    right: var(--wf-space-1);
+    top: var(--wf-space-1);
+    width: auto;
+    max-height: 60dvh;
+  }
+}

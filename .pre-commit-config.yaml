@@ -1,0 +1,45 @@
+repos:
+  # Secrets: block tokens and keys before they reach the repo
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  # Cheap file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-json
+      - id: end-of-file-fixer
+        exclude: ^app/package-lock\.json$
+      - id: trailing-whitespace
+
+  # Terraform formatting
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.78.0
+    hooks:
+      - id: terraform_fmt
+        files: ^infra/.*\.(tf|tfvars)$
+
+  - repo: local
+    hooks:
+      # App: the same lint and format checks CI runs
+      - id: app-lint
+        name: ESLint and Prettier (app)
+        entry: bash -c 'cd app && npx eslint . && npx prettier --check .'
+        language: system
+        pass_filenames: false
+        files: ^app/
+
+      # Ensure package-lock.json is in sync with package.json
+      - id: npm-lock-sync
+        name: Check npm lockfile consistency
+        entry: bash -c 'cd app && npm install --package-lock-only --ignore-scripts --no-audit --no-fund && git diff --exit-code package-lock.json || (echo "app/package-lock.json is out of sync. Run npm install in app/ and commit again." && exit 1)'
+        language: system
+        pass_filenames: false
+        files: ^app/package(-lock)?\.json$

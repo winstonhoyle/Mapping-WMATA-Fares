@@ -2,7 +2,6 @@ import io
 import json
 import os
 from collections import defaultdict
-from typing import Tuple, Union
 
 import boto3
 import geojson
@@ -12,23 +11,24 @@ from dotenv import load_dotenv
 load_dotenv(".env")
 
 WMATA_API_KEY = os.environ.get("WMATA_API_KEY")
-S3_BUCKET = os.environ.get("S3_BUCKET")
-S3_PREFIX = os.environ.get("S3_PREFIX", "wmata/")
+# `or`, not a get() default: env.sample leaves these as empty strings.
+S3_BUCKET = os.environ.get("S3_BUCKET") or "wmata-fares"
+S3_PREFIX = os.environ.get("S3_PREFIX") or "data/"
 
 s3 = boto3.client("s3")
 
 
-def upload_json(obj: Union[geojson.FeatureCollection, list, dict], key: str):
+def upload_json(obj: geojson.FeatureCollection | list | dict, key: str):
     """
     Upload a JSON-like object to S3 in memory
     """
     buf = io.BytesIO()
     buf.write(json.dumps(obj).encode("utf-8"))
     buf.seek(0)
-    s3.upload_fileobj(buf, S3_BUCKET, key)
+    s3.upload_fileobj(buf, S3_BUCKET, key, ExtraArgs={"ContentType": "application/json"})
 
 
-def extract_and_transform(api_key: str) -> Tuple[geojson.FeatureCollection, list, dict]:
+def extract_and_transform(api_key: str) -> tuple[geojson.FeatureCollection, dict, dict]:
     """
     Build 3 files: Fares JSON, Stations GeoJSON, and Lines GeoJSON
     """
@@ -45,9 +45,7 @@ def extract_and_transform(api_key: str) -> Tuple[geojson.FeatureCollection, list
     lines_geojson = requests.get(resp.headers["Location"]).json()
 
     # Stations
-    stations_json = requests.get(
-        "http://api.wmata.com/Rail.svc/json/jStations", headers=headers
-    ).json()["Stations"]
+    stations_json = requests.get("http://api.wmata.com/Rail.svc/json/jStations", headers=headers).json()["Stations"]
 
     # Fares
     fares_json = requests.get(
@@ -64,13 +62,11 @@ def extract_and_transform(api_key: str) -> Tuple[geojson.FeatureCollection, list
     for s in stations_json:
         properties = s.copy()
         station_code = properties["Code"]
-        lat = round(properties.pop("Lat"),6)
-        lon = round(properties.pop("Lon"),6)
+        lat = round(properties.pop("Lat"), 6)
+        lon = round(properties.pop("Lon"), 6)
 
         # Create a Feature
-        feature = geojson.Feature(
-            geometry=geojson.Point((lon, lat)), properties=properties
-        )
+        feature = geojson.Feature(geometry=geojson.Point((lon, lat)), properties=properties)
         features.append(feature)
 
         # Format fares
@@ -94,13 +90,10 @@ def main():
     stations, fares, lines = extract_and_transform(api_key=WMATA_API_KEY)
 
     # S3 and Local output
-    for file_name, data_obj in zip(
-        ["stations.geojson", "fares.json", "lines.geojson"], [stations, fares, lines]
-    ):
-
+    for file_name, data_obj in zip(["stations.geojson", "fares.json", "lines.geojson"], [stations, fares, lines]):
         # Write locally
         with open(os.path.join("data", file_name), "w") as f:
-            f.write(json.dumps(stations))
+            f.write(json.dumps(data_obj))
 
         # Upload
         upload_json(data_obj, f"{S3_PREFIX}{file_name}")

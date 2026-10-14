@@ -1,20 +1,45 @@
+# Python
 __pycache__/
-.ipynb_checkpoints/
-data/*.geojson
-data/*.json
+*.py[cod]
 .venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+app/dist/
+coverage/
+npm-debug.log*
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+tfplan
+infra/build/
+
+# Data the upload script writes locally
+data/*.json
+data/*.geojson
+
+# Secrets and local settings
+.env
+.env.*
 *.env
-*.db
-*.logs
-*.ipynb
+!.env.sample
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs and build leftovers
+*.log
+*.tmp
 *.zip
 
-*.csv
-*.local
-
-package/
-.terraform/
-.terraform*
-terraform.tfstate*
-infra/terraform.tfvars
-lambda/build/
+# Local notes
+PROMPT.md

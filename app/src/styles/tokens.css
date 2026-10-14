@@ -1,0 +1,134 @@
+@font-face {
+  font-family: "Public Sans";
+  src: url("../assets/fonts/public-sans-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  src: url("../assets/fonts/roboto-mono-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+
+  /* Palette: USWDS system colors */
+  --uswds-white: #ffffff;
+  --uswds-gray-5: #f0f0f0;
+  --uswds-gray-cool-10: #dfe1e2;
+  --uswds-gray-cool-60: #565c65;
+  --uswds-gray-90: #1b1b1b;
+  --uswds-blue-5: #eff6fb;
+  --uswds-blue-60v: #005ea2;
+  --uswds-blue-warm-70v: #1a4480;
+  --uswds-blue-40v: #2491ff;
+  --uswds-red-60v: #b50909;
+
+  /* Palette: Metrorail line colors, as WMATA prints them */
+  --metro-red: #bf0d3e;
+  --metro-orange: #ed8b00;
+  --metro-blue: #009cde;
+  --metro-green: #00b140;
+  --metro-yellow: #ffd100;
+  --metro-silver: #919d9d;
+
+  /* Palette: fare breaks, ColorBrewer RdYlGn, green (cheap) to red (expensive) */
+  --rdylgn7-1: #1a9850;
+  --rdylgn7-2: #91cf60;
+  --rdylgn7-3: #d9ef8b;
+  --rdylgn7-4: #ffffbf;
+  --rdylgn7-5: #fee08b;
+  --rdylgn7-6: #fc8d59;
+  --rdylgn7-7: #d73027;
+  --rdylgn5-1: #1a9641;
+  --rdylgn5-2: #a6d96a;
+  --rdylgn5-3: #ffffbf;
+  --rdylgn5-4: #fdae61;
+  --rdylgn5-5: #d7191c;
+  --black: #000000;
+
+  /* Roles: surfaces and text */
+  --wf-color-surface: var(--uswds-white);
+  --wf-color-surface-muted: var(--uswds-gray-5);
+  --wf-color-border: var(--uswds-gray-cool-10);
+  --wf-color-text: var(--uswds-gray-90);
+  --wf-color-text-muted: var(--uswds-gray-cool-60);
+  --wf-color-scrim: rgb(27 27 27 / 50%);
+
+  /* Roles: interactive */
+  --wf-color-primary: var(--uswds-blue-60v);
+  --wf-color-primary-hover: var(--uswds-blue-warm-70v);
+  --wf-color-on-primary: var(--uswds-white);
+  --wf-color-primary-tint: var(--uswds-blue-5);
+  --wf-color-link: var(--uswds-blue-60v);
+  --wf-color-focus: var(--uswds-blue-40v);
+  --wf-color-error: var(--uswds-red-60v);
+
+  /* Roles: map */
+  --wf-map-line-red: var(--metro-red);
+  --wf-map-line-orange: var(--metro-orange);
+  --wf-map-line-blue: var(--metro-blue);
+  --wf-map-line-green: var(--metro-green);
+  --wf-map-line-yellow: var(--metro-yellow);
+  --wf-map-line-silver: var(--metro-silver);
+  --wf-map-station-fill: var(--uswds-white);
+  --wf-map-station-stroke: var(--uswds-gray-90);
+  --wf-map-origin: var(--uswds-gray-90);
+  --wf-map-fare-below: var(--black);
+
+  /* Type */
+  --wf-font-sans: "Public Sans", system-ui, sans-serif;
+  --wf-font-mono: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --wf-font-size-3xs: 0.8125rem;
+  --wf-font-size-2xs: 0.875rem;
+  --wf-font-size-xs: 0.9375rem;
+  --wf-font-size-sm: 1rem;
+  --wf-font-size-lg: 1.375rem;
+
+  --wf-font-weight-regular: 400;
+  --wf-font-weight-semibold: 600;
+  --wf-font-weight-bold: 700;
+
+  --wf-leading-tight: 1.2;
+  --wf-leading-body: 1.5;
+
+  /* Spacing: USWDS units */
+  --wf-space-05: 0.25rem;
+  --wf-space-1: 0.5rem;
+  --wf-space-105: 0.75rem;
+  --wf-space-2: 1rem;
+  --wf-space-3: 1.5rem;
+
+  /* Shape and elevation */
+  --wf-radius-sm: 2px;
+  --wf-radius-md: 0.25rem;
+  --wf-radius-lg: 0.5rem;
+  --wf-radius-pill: 99rem;
+  --wf-shadow-1: 0 1px 4px 0 rgb(0 0 0 / 10%);
+  --wf-shadow-2: 0 4px 8px 0 rgb(0 0 0 / 10%);
+  --wf-shadow-3: 0 8px 16px 0 rgb(0 0 0 / 10%);
+
+  --wf-target-min: 2.75rem;
+  --wf-map-bottom: calc(var(--wf-space-3) + env(safe-area-inset-bottom));
+  --wf-icon-sm: 1rem;
+  --wf-icon-md: 1.25rem;
+  --wf-duration: 200ms;
+
+  /* Layers */
+  --wf-z-panel: 1000;
+  --wf-z-floating: 1100;
+  --wf-z-dialog: 2000;
+  --wf-z-menu: 3000;
+}
+
+@media (max-width: 40em) {
+  :root {
+    --wf-map-bottom: calc(3.25rem + env(safe-area-inset-bottom));
+  }
+}

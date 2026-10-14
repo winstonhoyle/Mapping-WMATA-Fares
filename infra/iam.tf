@@ -22,13 +22,12 @@ resource "aws_iam_role_policy" "lambda_policy" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      # S3 access for fare data
+      # Read the fare data; ListBucket turns a missing key into 404 instead of 403
       {
         Effect = "Allow",
         Action = [
           "s3:GetObject",
-          "s3:ListBucket",
-          "s3:PutObject"
+          "s3:ListBucket"
         ],
         Resource = [
           "arn:aws:s3:::${aws_s3_bucket.wmata.bucket}",

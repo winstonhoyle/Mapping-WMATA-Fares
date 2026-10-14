@@ -1,6 +1,6 @@
 # Create ACM certificate for your API custom domain
 resource "aws_acm_certificate" "api_cert" {
-  domain_name       = "api.wmatafares.com"
+  domain_name       = "api.${var.domain}"
   validation_method = "DNS"
   region            = var.aws_region # Must be us-east-1 for API Gateway
 }

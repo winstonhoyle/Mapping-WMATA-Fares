@@ -1,22 +1,31 @@
-## Lambda 
+# WMATA Fares API
 
-Within this folder is a [python file](fare_api.py). It includes logic of handling requests coming from the UI.
+One Lambda behind API Gateway at `https://api.wmatafares.com`. It answers `/stations`,
+`/lines`, and `/fares/{code}` from three JSON files in `s3://wmata-fares/data/`, which it reads
+once per container. The endpoints are in the [API reference](../README.md#api).
 
-## Building
+## Layout
 
-Building the application via terraform, [../infra/README.md](../infra/README.md) has more information on building this module.
+| Module | Job |
+| --- | --- |
+| `wmata_fares_api/handler.py` | Entry point: dispatches by path, validates the station code, maps errors to responses |
+| `wmata_fares_api/data.py` | Loads stations, lines, and fares from S3, cached for the container's life |
+| `wmata_fares_api/fares.py` | Looks up a station and builds its fares, with the origin and its other platform free |
+| `wmata_fares_api/responses.py` | JSON responses with CORS and `Cache-Control` |
+| `wmata_fares_api/config.py` | `S3_BUCKET` (default `wmata-fares`) and `S3_PREFIX` (default `data/`) |
+| `tests/` | pytest against an in-memory dataset; no AWS needed |
 
-If you want to build individual lambda functions please copy this script into your console in the root of the repo. It individually packages this folder and requirements and pushes to AWS
+Successful responses carry `Cache-Control: public, max-age=3600`, which Cloudflare follows;
+errors carry `no-store`.
+
+## Run and test
+
+```bash
+make py-check
 ```
-mkdir -p package
-cp lambda/*.py package/
-pip install --target ./package -r requirements.txt --no-cache-dir
-cd package
-zip -rq ../lambda.zip . -x "*.pyc" -x "*__pycache__*"
-cd ..
 
-aws lambda update-function-code \
-  --function-name WMATA-fare-api \
-  --zip-file fileb://lambda.zip \
-  --region us-east-1
-```
+## Deploy
+
+The function has no dependencies beyond the runtime's boto3. Terraform zips
+`wmata_fares_api/` (`infra/lambda.tf`) and updates the function when the code changes, so
+`terraform apply` (or a push to `main`) is the whole deploy.

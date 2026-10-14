@@ -1,0 +1,8 @@
+.panel {
+  background: var(--wf-color-surface);
+  color: var(--wf-color-text);
+  border: 1px solid var(--wf-color-border);
+  border-radius: var(--wf-radius-lg);
+  box-shadow: var(--wf-shadow-2);
+  padding: var(--wf-space-105) var(--wf-space-2);
+}

@@ -1,0 +1,6 @@
+.tooltip {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--wf-font-size-3xs);
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,81 @@
+.container {
+  font-size: var(--wf-font-size-2xs);
+}
+
+.sm {
+  font-size: var(--wf-font-size-3xs);
+}
+
+.control {
+  min-height: 2.5rem;
+  border: 1px solid var(--wf-color-text-muted);
+  border-radius: var(--wf-radius-md);
+  background: var(--wf-color-surface);
+  cursor: pointer;
+}
+
+.sm .control {
+  min-height: 2rem;
+}
+
+.controlFocused {
+  outline: 2px solid var(--wf-color-focus);
+  outline-offset: 2px;
+}
+
+.valueContainer {
+  padding: 0 var(--wf-space-1);
+  gap: var(--wf-space-05);
+}
+
+.placeholder {
+  color: var(--wf-color-text-muted);
+}
+
+.indicators {
+  padding-right: var(--wf-space-05);
+}
+
+.indicator {
+  display: flex;
+  padding: var(--wf-space-05);
+  color: var(--wf-color-text-muted);
+  font-size: var(--wf-icon-md);
+}
+
+.indicator:hover {
+  color: var(--wf-color-text);
+}
+
+.menu {
+  margin-top: var(--wf-space-05);
+  border: 1px solid var(--wf-color-border);
+  border-radius: var(--wf-radius-md);
+  background: var(--wf-color-surface);
+  box-shadow: var(--wf-shadow-2);
+  z-index: var(--wf-z-menu);
+}
+
+.menuList {
+  max-height: 18rem;
+  padding: var(--wf-space-05) 0;
+}
+
+.option {
+  padding: var(--wf-space-1) var(--wf-space-105);
+  cursor: pointer;
+}
+
+.optionFocused {
+  background: var(--wf-color-primary-tint);
+}
+
+.optionSelected {
+  font-weight: var(--wf-font-weight-bold);
+  color: var(--wf-color-primary);
+}
+
+.empty {
+  padding: var(--wf-space-1) var(--wf-space-105);
+  color: var(--wf-color-text-muted);
+}

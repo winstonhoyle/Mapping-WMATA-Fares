@@ -1,0 +1,35 @@
+.legend {
+  position: absolute;
+  bottom: var(--wf-map-bottom);
+  left: var(--wf-space-105);
+  z-index: var(--wf-z-panel);
+  padding: var(--wf-space-1) var(--wf-space-105);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--wf-font-size-2xs);
+  font-weight: var(--wf-font-weight-bold);
+}
+
+.items {
+  margin: var(--wf-space-05) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--wf-font-size-3xs);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--wf-space-1);
+  padding: 0.125rem 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.swatch {
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 1px solid var(--wf-map-station-stroke);
+  border-radius: var(--wf-radius-pill);
+}

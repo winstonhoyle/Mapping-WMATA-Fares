@@ -56,6 +56,11 @@ export function Combobox<T>({
       isClearable={isClearable}
       getOptionLabel={getOptionLabel}
       getOptionValue={getOptionValue}
+      // The panel scrolls, which would clip a menu rendered inside it.
+      menuPortalTarget={document.body}
+      menuPosition="fixed"
+      // react-select sets the portal's z-index inline, so a class can't override it.
+      styles={{ menuPortal: (base) => ({ ...base, zIndex: "var(--wf-z-menu)" }) }}
       unstyled
       components={{ DropdownIndicator, ClearIndicator, IndicatorSeparator: null }}
       classNames={{
@@ -67,6 +72,7 @@ export function Combobox<T>({
         indicatorsContainer: () => styles.indicators,
         dropdownIndicator: () => styles.indicator,
         clearIndicator: () => styles.indicator,
+        menuPortal: () => [styles.container, styles[size]].join(" "),
         menu: () => styles.menu,
         menuList: () => styles.menuList,
         option: (state) =>

@@ -1,25 +1,44 @@
+import { useState } from "react";
+import { IconButton } from "@/components/common/IconButton";
 import { Panel } from "@/components/common/Panel";
-import { breakLabels, FARE_BREAKS, FARE_TYPES, type FareType } from "@/utils/fares";
+import { Swatch } from "@/components/common/Swatch";
+import { AddIcon, RemoveIcon } from "@/icons";
+import { breakLabels, BREAKS, measureInfo, type Measure } from "@/utils/fares";
 import styles from "./Legend.module.css";
 
-type LegendProps = { origin: string; fareType: FareType };
+type LegendProps = { measure: Measure };
 
-export const Legend = ({ origin, fareType }: LegendProps) => {
-  const labels = breakLabels(fareType);
-  const typeLabel = FARE_TYPES.find((t) => t.key === fareType)?.label;
+export const Legend = ({ measure }: LegendProps) => {
+  // Starts closed on phones, where the open list would cover much of the map.
+  const [open, setOpen] = useState(() => !window.matchMedia("(max-width: 40em)").matches);
+  const labels = breakLabels(measure);
+  const { title } = measureInfo(measure);
   return (
-    <Panel className={styles.legend}>
-      <h2 className={styles.title} id="legend-title">
-        {typeLabel} fare from {origin}
-      </h2>
-      <ul className={styles.items} aria-labelledby="legend-title">
-        {FARE_BREAKS[fareType].map((b, i) => (
-          <li key={b.min} className={styles.item}>
-            <span className={styles.swatch} style={{ background: `var(${b.token})` }} aria-hidden />
-            {labels[i]}
-          </li>
-        ))}
-      </ul>
+    <Panel id="legend" className={styles.legend}>
+      <div className={styles.header}>
+        <h2 className={styles.title} id="legend-title">
+          {title}
+        </h2>
+        <IconButton
+          label={open ? "Collapse legend" : "Expand legend"}
+          aria-expanded={open}
+          aria-controls="legend-items"
+          onClick={() => setOpen(!open)}
+        >
+          {open ? <RemoveIcon /> : <AddIcon />}
+        </IconButton>
+      </div>
+
+      {open && (
+        <ul id="legend-items" className={styles.items} aria-labelledby="legend-title">
+          {BREAKS[measure].map((b, i) => (
+            <li key={b.min} className={styles.item}>
+              <Swatch token={b.token} />
+              {labels[i]}
+            </li>
+          ))}
+        </ul>
+      )}
     </Panel>
   );
 };

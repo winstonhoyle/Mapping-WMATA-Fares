@@ -24,3 +24,6 @@ export type Fare = {
 
 /** Destination station code to the fare from the origin. */
 export type Fares = Record<string, Fare>;
+
+/** One stretch of track: its platform codes in riding order, and every line that covers it. */
+export type RouteLeg = { stations: string[]; lines: { line: string; toward: string }[] };

@@ -6,6 +6,13 @@
   padding: var(--wf-space-1) var(--wf-space-105);
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wf-space-1);
+}
+
 .title {
   margin: 0;
   font-size: var(--wf-font-size-2xs);
@@ -25,11 +32,4 @@
   gap: var(--wf-space-1);
   padding: 0.125rem 0;
   font-variant-numeric: tabular-nums;
-}
-
-.swatch {
-  width: 0.875rem;
-  height: 0.875rem;
-  border: 1px solid var(--wf-map-station-stroke);
-  border-radius: var(--wf-radius-pill);
 }

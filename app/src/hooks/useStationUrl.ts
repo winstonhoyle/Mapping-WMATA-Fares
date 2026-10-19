@@ -20,7 +20,8 @@ export const useStationUrl = (byCode: Map<string, Station>) => {
   useEffect(() => {
     if (!ready) return;
     const canonical = buildStationPath(code);
-    if (canonical !== window.location.pathname) window.history.replaceState(null, "", canonical);
+    if (canonical !== window.location.pathname)
+      window.history.replaceState(null, "", canonical + window.location.search);
     const name = byCode.get(code)?.properties.Name;
     document.title = name
       ? `Fares from ${name} | WMATA Fares`
@@ -29,7 +30,9 @@ export const useStationUrl = (byCode: Map<string, Station>) => {
 
   const select = (next: string) => {
     const nextPath = buildStationPath(next);
-    if (nextPath !== window.location.pathname) window.history.pushState(null, "", nextPath);
+    // The query (?line=) belongs to the view, not the station, so it carries over.
+    if (nextPath !== window.location.pathname)
+      window.history.pushState(null, "", nextPath + window.location.search);
     setPath(nextPath);
   };
 

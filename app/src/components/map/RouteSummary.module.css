@@ -1,0 +1,33 @@
+.route {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wf-space-1);
+  font-size: var(--wf-font-size-2xs);
+}
+
+.total {
+  margin: 0;
+  font-weight: var(--wf-font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.legs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wf-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.leg {
+  display: flex;
+  gap: var(--wf-space-1);
+  line-height: var(--wf-leading-tight);
+}
+
+.bar {
+  flex: none;
+  width: var(--wf-space-05);
+  border-radius: var(--wf-radius-pill);
+}

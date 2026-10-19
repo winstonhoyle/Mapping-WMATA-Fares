@@ -1,0 +1,41 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--wf-font-size-3xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.caption {
+  padding-bottom: var(--wf-space-05);
+  font-size: var(--wf-font-size-2xs);
+  font-weight: var(--wf-font-weight-bold);
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: var(--wf-space-05) 0;
+  border-bottom: 1px solid var(--wf-color-border);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.table th:first-child {
+  padding-right: var(--wf-space-1);
+  font-weight: var(--wf-font-weight-regular);
+  text-align: left;
+  white-space: normal;
+}
+
+.table td + td {
+  padding-left: var(--wf-space-105);
+}
+
+.table thead th {
+  color: var(--wf-color-text-muted);
+  font-weight: var(--wf-font-weight-bold);
+}
+
+.swatch {
+  margin-right: var(--wf-space-1);
+}

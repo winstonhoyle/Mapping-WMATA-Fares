@@ -1,2 +1,5 @@
 pre-commit
 pytest
+colorblind
+numpy
+opencv-python-headless

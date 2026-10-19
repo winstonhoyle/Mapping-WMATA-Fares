@@ -1,0 +1,67 @@
+.control {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--wf-space-05);
+  font-size: var(--wf-font-size-2xs);
+  font-weight: var(--wf-font-weight-bold);
+}
+
+.options {
+  display: flex;
+  border: 2px solid var(--wf-color-primary);
+  border-radius: var(--wf-radius-md);
+  overflow: hidden;
+}
+
+.option {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--wf-target-min);
+  padding: var(--wf-space-05) var(--wf-space-1);
+  background: var(--wf-color-surface);
+  color: var(--wf-color-primary);
+  font-size: var(--wf-font-size-2xs);
+  font-weight: var(--wf-font-weight-bold);
+  line-height: var(--wf-leading-tight);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color var(--wf-duration),
+    color var(--wf-duration);
+}
+
+.option + .option {
+  border-left: 2px solid var(--wf-color-primary);
+}
+
+.option:hover {
+  background: var(--wf-color-primary-tint);
+}
+
+.option:has(input:checked) {
+  background: var(--wf-color-primary);
+  color: var(--wf-color-on-primary);
+}
+
+/* The radio stays in the page for keyboard and screen readers; the label shows its state. */
+.option input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--wf-color-focus);
+  outline-offset: -4px;
+}

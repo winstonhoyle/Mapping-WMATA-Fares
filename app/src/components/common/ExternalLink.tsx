@@ -41,7 +41,7 @@ export const ExternalLink = ({
           <OpenInNewIcon className={styles.icon} />
         </span>
       )}{" "}
-      <span className={styles.srOnly}>(opens in a new tab)</span>
+      <span className="visually-hidden">(opens in a new tab)</span>
     </a>
   );
 };

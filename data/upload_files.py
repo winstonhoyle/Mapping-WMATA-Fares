@@ -45,7 +45,7 @@ def extract_and_transform(api_key: str) -> tuple[geojson.FeatureCollection, dict
     lines_geojson = requests.get(resp.headers["Location"]).json()
 
     # Stations
-    stations_json = requests.get("http://api.wmata.com/Rail.svc/json/jStations", headers=headers).json()["Stations"]
+    stations_json = requests.get("https://api.wmata.com/Rail.svc/json/jStations", headers=headers).json()["Stations"]
 
     # Fares
     fares_json = requests.get(

@@ -56,3 +56,12 @@ def test_errors_are_500_without_details(monkeypatch):
     status, body, _ = call("/stations")
     assert status == 500
     assert "secret" not in body["error"]
+
+
+def test_route_validates_both_codes():
+    status, body, headers = call("/route/a01/A02")
+    assert status == 200
+    assert isinstance(body, list)
+    assert headers["Cache-Control"].startswith("public")
+    assert call("/route/A01/ZZZ")[0] == 400
+    assert call("/route/Z99/A01")[0] == 404

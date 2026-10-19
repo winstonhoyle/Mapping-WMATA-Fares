@@ -16,6 +16,11 @@
   gap: var(--wf-space-1);
 }
 
+.actions {
+  display: flex;
+  gap: var(--wf-space-05);
+}
+
 .title {
   margin: 0;
   font-size: var(--wf-font-size-sm);
@@ -31,34 +36,6 @@
   min-height: 0;
   margin-top: var(--wf-space-105);
   overflow-y: auto;
-}
-
-.fareTypes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--wf-space-05) var(--wf-space-105);
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: var(--wf-font-size-2xs);
-}
-
-.label {
-  width: 100%;
-  padding: 0;
-  font-weight: var(--wf-font-weight-bold);
-}
-
-.fareType {
-  display: flex;
-  align-items: center;
-  gap: var(--wf-space-05);
-  cursor: pointer;
-}
-
-.fareType input {
-  margin: 0;
-  accent-color: var(--wf-color-primary);
 }
 
 .hint {

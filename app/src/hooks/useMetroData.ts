@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchFares, fetchLines, fetchStations } from "@/services/api";
-import type { Fares, Lines, Station } from "@/types";
+import { fetchFares, fetchLines, fetchRoute, fetchStations } from "@/services/api";
+import type { Lines, Station } from "@/types";
 
 const message = (err: unknown) =>
   err instanceof Error && err.name === "AbortError" ? null : "Couldn't load Metro data. Try again.";
@@ -26,28 +26,44 @@ export const useMetroData = () => {
   return { stations, lines, error };
 };
 
-type FaresResult = { origin: string; fares: Fares | null; error: string | null };
+type Result<T> = { key: string; data: T | null; error: string | null };
 
-export const useFares = (origin: string) => {
-  const [result, setResult] = useState<FaresResult | null>(null);
+/** Loads by key (nothing for ""); `load` must be stable, like the api functions. */
+const useLoad = <T>(key: string, load: (key: string, signal: AbortSignal) => Promise<T>) => {
+  const [result, setResult] = useState<Result<T> | null>(null);
 
   useEffect(() => {
-    if (!origin) return;
+    if (!key) return;
     const controller = new AbortController();
-    fetchFares(origin, controller.signal)
-      .then((fares) => setResult({ origin, fares, error: null }))
+    load(key, controller.signal)
+      .then((data) => setResult({ key, data, error: null }))
       .catch((err) => {
         const error = message(err);
-        if (error) setResult({ origin, fares: null, error });
+        if (error) setResult({ key, data: null, error });
       });
     return () => controller.abort();
-  }, [origin]);
+  }, [key, load]);
 
-  // A result for an earlier origin would color the map wrong, so it counts as nothing yet.
-  const current = origin && result?.origin === origin ? result : null;
+  const current = key && result?.key === key ? result : null;
   return {
-    fares: current?.fares ?? null,
-    loading: Boolean(origin) && !current,
+    // The last result stays up while the next one loads, so the map doesn't flash between.
+    data: key ? (result?.data ?? null) : null,
+    loading: Boolean(key) && !current,
     error: current?.error ?? null,
   };
+};
+
+export const useFares = (origin: string) => {
+  const { data, ...rest } = useLoad(origin, fetchFares);
+  return { fares: data, ...rest };
+};
+
+const routeByKey = (key: string, signal: AbortSignal) => {
+  const [from, to] = key.split("/");
+  return fetchRoute(from, to, signal);
+};
+
+export const useRoute = (from: string, to: string) => {
+  const { data, ...rest } = useLoad(from && to ? `${from}/${to}` : "", routeByKey);
+  return { route: data, ...rest };
 };

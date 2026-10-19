@@ -1,4 +1,4 @@
-import type { Fares, Lines, Stations } from "@/types";
+import type { Fares, Lines, RouteLeg, Stations } from "@/types";
 
 export const API_BASE = import.meta.env.VITE_API_BASE || "https://api.wmatafares.com";
 
@@ -12,3 +12,5 @@ export const fetchStations = (signal?: AbortSignal) => fetchJSON<Stations>("/sta
 export const fetchLines = (signal?: AbortSignal) => fetchJSON<Lines>("/lines", signal);
 export const fetchFares = (code: string, signal?: AbortSignal) =>
   fetchJSON<Fares>(`/fares/${encodeURIComponent(code)}`, signal);
+export const fetchRoute = (from: string, to: string, signal?: AbortSignal) =>
+  fetchJSON<RouteLeg[]>(`/route/${encodeURIComponent(from)}/${encodeURIComponent(to)}`, signal);

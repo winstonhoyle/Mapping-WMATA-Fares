@@ -14,20 +14,22 @@ put `VITE_API_BASE=https://your-api-host` in `app/.env.local`.
 
 ## Links
 
-The URL holds the selected station, so every view can be shared and reloaded: `/A01` shows
-fares from Metro Center. Codes are case-insensitive, and an unknown code opens the home map.
+The URL holds the view, so it can be shared and reloaded: `/A01` shows fares from Metro Center,
+`?line=orange` picks a line, and `?to=C05` adds a route to Rosslyn. Codes and line names are
+case-insensitive, and an unknown one is ignored.
 
 ## Layout
 
-| Path                     | Contents                                                                                  |
-| ------------------------ | ----------------------------------------------------------------------------------------- |
-| `src/components/map/`    | The map page: `MapView`, `StationMarker`, `OverlayPanel`, `Legend`, `AboutDialog`         |
-| `src/components/common/` | Domain-free pieces: `Button`, `IconButton`, `Combobox`, `Panel`, `Dialog`, `ExternalLink` |
-| `src/hooks/`             | `useMetroData` (stations, lines, fares) and `useStationUrl` (URL sync and page title)     |
-| `src/services/api.ts`    | API client                                                                                |
-| `src/utils/`             | Fare bins and formatting, station path parsing                                            |
-| `src/styles/`            | `tokens.css` (every color, size, and space) and base styles                               |
-| `scripts/`               | `build-pages.js` and `pages.js`, run after every build                                    |
+| Path                     | Contents                                                                                                                                              |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/components/map/`    | The map page: `MapView`, `StationMarker`, `RouteLayer`, `OverlayPanel`, `StationPicker`, `LineStations`, `RouteSummary`, `Legend`, `AboutDialog`      |
+| `src/components/common/` | Domain-free pieces: `Button`, `IconButton`, `Combobox`, `SegmentedControl`, `Disclosure`, `Swatch`, `Panel`, `Dialog`, `ExternalLink`                 |
+| `src/hooks/`             | `useMetroData` (stations, lines, fares, routes), `useStationUrl` (path and page title), `useQueryParam` and `useLineUrl` (view settings in the query) |
+| `src/services/api.ts`    | API client                                                                                                                                            |
+| `src/utils/`             | Measures, color breaks, and formatting (`fares.ts`); lines and route paths along their track (`lines.ts`); station path parsing                       |
+| `src/styles/`            | `tokens.css` (every color, size, and space) and base styles                                                                                           |
+| `scripts/`               | `build-pages.js` and `pages.js`, run after every build                                                                                                |
+| `public/`                | Static files, including the API docs (`docs.html`, `openapi.yaml`)                                                                                    |
 
 ## Search engines and security headers
 

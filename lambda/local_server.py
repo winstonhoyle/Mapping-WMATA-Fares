@@ -18,7 +18,10 @@ class Handler(BaseHTTPRequestHandler):
         for key, value in res["headers"].items():
             self.send_header(key, value)
         self.end_headers()
-        self.wfile.write(res["body"].encode())
+        try:
+            self.wfile.write(res["body"].encode())
+        except BrokenPipeError:
+            pass  # the app aborted the request, as React's dev double mount does
 
 
 if __name__ == "__main__":

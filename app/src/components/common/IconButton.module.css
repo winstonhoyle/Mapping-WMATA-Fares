@@ -2,8 +2,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 2rem;
+  height: 2rem;
   padding: 0;
   border: none;
+  border-radius: var(--wf-radius-md);
+  background: none;
   color: var(--wf-color-text-muted);
   font-size: var(--wf-icon-md);
   cursor: pointer;
@@ -14,28 +18,5 @@
 
 .iconButton:hover {
   color: var(--wf-color-text);
-}
-
-.plain {
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--wf-radius-md);
-  background: none;
-}
-
-.plain:hover {
   background: var(--wf-color-surface-muted);
-}
-
-.floating {
-  width: var(--wf-target-min);
-  height: var(--wf-target-min);
-  border-radius: var(--wf-radius-pill);
-  background: var(--wf-color-surface);
-  box-shadow: var(--wf-shadow-2);
-  color: var(--wf-color-primary);
-}
-
-.floating:hover {
-  color: var(--wf-color-primary-hover);
 }

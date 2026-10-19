@@ -1,0 +1,9 @@
+.swatch {
+  display: inline-block;
+  flex: none;
+  width: var(--wf-swatch);
+  height: var(--wf-swatch);
+  border: 1px solid var(--wf-map-station-stroke);
+  border-radius: var(--wf-radius-pill);
+  vertical-align: middle;
+}

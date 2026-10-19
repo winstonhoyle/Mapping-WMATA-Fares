@@ -1,5 +1,5 @@
 .PHONY: app-install app-start app-build app-preview app-check app-test \
-	py-check data api-local app-local tf-init tf-plan tf-apply
+	py-check colors-check data api-local app-local tf-init tf-plan tf-apply
 
 app/node_modules: app/package-lock.json
 	cd app && npm ci
@@ -29,6 +29,10 @@ app-test: app/node_modules
 
 py-check: .venv/.deps
 	cd lambda && $(CURDIR)/.venv/bin/python -m pytest -q
+
+# Map palettes under protanopia, deuteranopia, and tritanopia (scripts/check_colors.py).
+colors-check: .venv/.deps
+	.venv/bin/python scripts/check_colors.py
 
 # Pulls stations, lines, and fares from WMATA and Open Data DC, then uploads them to S3.
 data: .venv/.deps

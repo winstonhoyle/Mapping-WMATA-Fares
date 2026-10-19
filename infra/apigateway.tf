@@ -38,6 +38,12 @@ resource "aws_apigatewayv2_route" "fares" {
   target    = "integrations/${aws_apigatewayv2_integration.fares_integration.id}"
 }
 
+resource "aws_apigatewayv2_route" "route" {
+  api_id    = aws_apigatewayv2_api.wmata_fares_api.id
+  route_key = "GET /route/{from}/{to}"
+  target    = "integrations/${aws_apigatewayv2_integration.fares_integration.id}"
+}
+
 # auto_deploy handles deployments; no explicit aws_apigatewayv2_deployment needed.
 resource "aws_apigatewayv2_stage" "flights_stage" {
   api_id      = aws_apigatewayv2_api.wmata_fares_api.id

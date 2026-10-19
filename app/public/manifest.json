@@ -4,6 +4,6 @@
   "icons": [{ "src": "logo-mark.svg", "type": "image/svg+xml", "sizes": "any" }],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#1b1b1b",
+  "theme_color": "#005ea2",
   "background_color": "#ffffff"
 }

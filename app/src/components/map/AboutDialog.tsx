@@ -12,11 +12,14 @@ export const AboutDialog = ({ open, onClose }: AboutDialogProps) => (
       <h2 className={styles.title}>About WMATA Fares</h2>
       <p>
         Metrorail fares depend on the distance between two stations and the time of day. Pick a
-        station to see what a trip from it costs to every other station.
+        station to see what a trip from it costs, or how long it takes, to every other station.
       </p>
       <p>
         Peak fares apply on weekday rush hours. WMATA lists the current hours and passes on its{" "}
         <ExternalLink href="https://www.wmata.com/fares/">fares page</ExternalLink>.
+      </p>
+      <p>
+        The data is free to use through the <ExternalLink href="/docs">API</ExternalLink>.
       </p>
       <p>
         Not affiliated with WMATA. Read the code on{" "}

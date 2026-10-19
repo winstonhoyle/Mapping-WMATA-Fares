@@ -21,7 +21,7 @@ const main = async () => {
   for (const page of pages) {
     fs.writeFileSync(path.join(DIST, `${page.path}.html`), renderPage(template, page));
   }
-  const urls = [`${SITE_URL}/`, ...pages.map((p) => p.url).sort()];
+  const urls = [`${SITE_URL}/`, `${SITE_URL}/docs`, ...pages.map((p) => p.url).sort()];
   fs.writeFileSync(
     path.join(DIST, "sitemap.xml"),
     sitemapXml(urls, new Date().toISOString().slice(0, 10)),

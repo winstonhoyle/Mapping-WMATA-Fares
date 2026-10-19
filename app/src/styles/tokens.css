@@ -45,11 +45,16 @@
   --rdylgn7-5: #fee08b;
   --rdylgn7-6: #fc8d59;
   --rdylgn7-7: #d73027;
-  --rdylgn5-1: #1a9641;
-  --rdylgn5-2: #a6d96a;
-  --rdylgn5-3: #ffffbf;
-  --rdylgn5-4: #fdae61;
-  --rdylgn5-5: #d7191c;
+  /* RdYlGn 7 without #d9ef8b; ColorBrewer's 6 class fails make colors-check */
+  --rdylgn6-1: #1a9850;
+  --rdylgn6-2: #91cf60;
+  --rdylgn6-3: #ffffbf;
+  --rdylgn6-4: #fee08b;
+  --rdylgn6-5: #fc8d59;
+  --rdylgn6-6: #d73027;
+  --rdylgn3-1: #91cf60;
+  --rdylgn3-2: #ffffbf;
+  --rdylgn3-3: #fc8d59;
   --black: #000000;
 
   /* Roles: surfaces and text */
@@ -80,6 +85,9 @@
   --wf-map-station-stroke: var(--uswds-gray-90);
   --wf-map-origin: var(--uswds-gray-90);
   --wf-map-fare-below: var(--black);
+  --wf-map-route-casing: var(--wf-map-station-stroke);
+  --wf-map-faded-line: 0.15;
+  --wf-map-faded-station: 0.2;
 
   /* Type */
   --wf-font-sans: "Public Sans", system-ui, sans-serif;
@@ -117,12 +125,12 @@
   --wf-target-min: 2.75rem;
   --wf-map-bottom: calc(var(--wf-space-3) + env(safe-area-inset-bottom));
   --wf-icon-sm: 1rem;
+  --wf-swatch: 0.875rem;
   --wf-icon-md: 1.25rem;
   --wf-duration: 200ms;
 
   /* Layers */
   --wf-z-panel: 1000;
-  --wf-z-floating: 1100;
   --wf-z-dialog: 2000;
   --wf-z-menu: 3000;
 }
